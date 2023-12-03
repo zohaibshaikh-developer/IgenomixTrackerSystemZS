@@ -28,6 +28,9 @@ interface ChartData {
     borderColor: string;
     borderWidth: number;
   }[];
+
+  // Add an index signature to allow any string key
+  [key: string]: any;
 }
 
 const ChartComponentCoolerIN: React.FC = () => {
