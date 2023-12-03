@@ -8,7 +8,7 @@ interface SidebarProps {
   isSidebarOpen: boolean;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ toggleSidebar, isSidebarOpen }) => {
+const Sidebar: React.FC<SidebarProps> = ({isSidebarOpen }) => {
   const [shouldRenderContent, setShouldRenderContent] = useState(false);
 
   useEffect(() => {

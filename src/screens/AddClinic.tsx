@@ -14,10 +14,9 @@ const AddClinic: React.FC = () => {
     const [submitting, setSubmitting] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
 
-    const [clinicId, setclinicId] = useState('');
     const [clinicName, setclinicName] = useState('');
 
-    const [clinicIdValid, setclinicIdValid] = useState(true);
+
     const [clinicNameValid, setclinicNameValid] = useState(true);
 
     const navigate = useNavigate();

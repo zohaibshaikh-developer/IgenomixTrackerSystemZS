@@ -54,7 +54,7 @@ interface SignUpContainerProps {
   signingIn: boolean;
 }
 
-export const SignUpContainer: React.FC<SignUpContainerProps> = styled.div`
+export const SignUpContainer = styled.div<SignUpContainerProps>`
   position: absolute;
   top: 0;
   height: 100%;
@@ -77,7 +77,7 @@ interface SignInContainerProps {
   signingIn: boolean;
 }
 
-export const SignInContainer: React.FC<SignInContainerProps> = styled.div`
+export const SignInContainer = styled.div<SignInContainerProps>`
   position: absolute;
   top: 0;
   height: 100%;
@@ -205,7 +205,7 @@ interface OverlayContainerProps {
   signingIn: boolean;
 }
 
-export const OverlayContainer: React.FC<OverlayContainerProps> = styled.div`
+export const OverlayContainer = styled.div<OverlayContainerProps>`
   position: absolute;
   top: 0;
   left: 50%;
@@ -222,7 +222,7 @@ interface OverlayProps {
   signingIn: boolean;
 }
 
-export const Overlay: React.FC<OverlayProps> = styled.div`
+export const Overlay = styled.div<OverlayProps>`
   background: #0DCEDA;
   background: -webkit-linear-gradient(to right, #6EF3D6, #0DCEDA);
   background: linear-gradient(to right, #6EF3D6, #0DCEDA);
@@ -243,7 +243,7 @@ interface OverlayPanelProps {
   // Add any additional props if needed
 }
 
-export const OverlayPanel: React.FC<OverlayPanelProps> = styled.div`
+export const OverlayPanel = styled.div<OverlayPanelProps>`
   position: absolute;
   display: flex;
   align-items: center;
@@ -262,9 +262,7 @@ interface LeftOverlayPanelProps {
   signingIn: boolean;
 }
 
-export const LeftOverlayPanel: React.FC<LeftOverlayPanelProps> = styled(
-  OverlayPanel
-)`
+export const LeftOverlayPanel = styled(OverlayPanel)<LeftOverlayPanelProps>`
   transform: translateX(-20%);
   ${(props) => (props.signingIn !== true ? `transform: translateX(0);` : null)}
 `;
@@ -273,9 +271,7 @@ interface RightOverlayPanelProps {
   signingIn: boolean;
 }
 
-export const RightOverlayPanel: React.FC<RightOverlayPanelProps> = styled(
-  OverlayPanel
-)`
+export const RightOverlayPanel = styled(OverlayPanel)<RightOverlayPanelProps>`
   right: 0;
   transform: translateX(0);
   ${(props) => (props.signingIn !== true ? `transform: translateX(20%);` : null)}
