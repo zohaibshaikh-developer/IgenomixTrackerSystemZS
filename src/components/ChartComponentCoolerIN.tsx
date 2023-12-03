@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { Bar } from 'react-chartjs-2';
 import moment from 'moment';
 
+// Assuming BASE_URL is properly imported
 import BASE_URL from '../config/base_url';
 
 import {
@@ -15,12 +16,18 @@ import {
   Legend,
   BarElement,
 } from 'chart.js';
-import { color } from 'chart.js/helpers';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, BarElement);
 
 interface ChartData {
-  [key: string]: number;
+  labels: string[];
+  datasets: {
+    label: string;
+    data: number[];
+    backgroundColor: string;
+    borderColor: string;
+    borderWidth: number;
+  }[];
 }
 
 const ChartComponentCoolerIN: React.FC = () => {
@@ -32,6 +39,11 @@ const ChartComponentCoolerIN: React.FC = () => {
   useEffect(() => {
     fetchData();
   }, []);
+
+  const generateCountsArray = (data: ChartData, labels: string[]) => {
+    const counts = labels.map((date) => data[date] || 0);
+    return counts;
+  };
   
   const fetchData = async () => {
     try {
@@ -58,10 +70,10 @@ const ChartComponentCoolerIN: React.FC = () => {
         labels: labels,
         datasets: [
           {
-            label: 'Count of Cooler IN entries',
+            label: 'Count of Cooler OUT entries',
             data: counts,
-            backgroundColor: 'rgba(255, 103, 1, 0.4)',
-            borderColor: 'rgba(255, 103, 1, 1)',
+            backgroundColor: 'rgba(254, 168, 47, 0.4)',
+            borderColor: 'rgba(254, 168, 47, 1)',
             borderWidth: 1,
           },
         ],
@@ -75,8 +87,8 @@ const ChartComponentCoolerIN: React.FC = () => {
   };
 
   // Generate labels for the last 30 days, including today and current month, date, year
-  const generateDateLabels = () => {
-    const labels = [];
+  const generateDateLabels = (): string[] => {
+    const labels: string[] = [];
     for (let i = 30; i >= 0; i--) {
       labels.push(moment().subtract(i, 'days').format('DD/MM/YYYY'));
     }
@@ -84,16 +96,10 @@ const ChartComponentCoolerIN: React.FC = () => {
     return labels;
   };
 
-  // Generate an array of counts corresponding to each label
-  const generateCountsArray = (data: ChartData, labels: string[]) => {
-    const counts = labels.map((date) => data[date] || 0);
-    return counts;
-  };
-
   // Display loading or error message
-  // if (loading) {
-  //   return <div className='text-left text-black'>Loading...</div>;
-  // }
+  if (loading) {
+    return <div className='text-left text-black'>Loading...</div>;
+  }
 
   if (error) {
     return <div className='text-left text-black'>{error}</div>;
@@ -104,18 +110,21 @@ const ChartComponentCoolerIN: React.FC = () => {
     <div>
       {chartData && (
         <>
-        <div  className='w-72 h-80 xl:w-96 xl:h-96 lg:w-96 xl:h-96'>
-          <Bar
-            data={chartData as any} // chartData is now ensured to be non-null
-            options={{
-              maintainAspectRatio: false,
-              responsive: true,
-            }}
-            ref={(ref) => (chartRef.current = ref)}
-          />
-        </div>
-          <div className="text-center font-semibold	 text-black font-serif mt-2 mb-6 sm:mb-6 xs:mb-6 md:mb-0 lg:mb-0 xl:mb-0">Cooler IN</div>
-          </>
+          <div className='w-72 h-80 xl:w-96 xl:h-96 lg:w-96 xl:h-96'>
+            <Bar
+              data={chartData}
+              options={{
+                maintainAspectRatio: false,
+                responsive: true,
+              }}
+              ref={(ref) => {
+                // Make sure to set the chartRef with the actual chart instance
+                chartRef.current = ref;
+              }}
+            />
+          </div>
+          <div className="text-center font-semibold text-black font-serif mt-2 mb-6 sm:mb-6 xs:mb-6 md:mb-0 lg:mb-0 xl:mb-0">Cooler IN</div>
+        </>
       )}
     </div>
   );

@@ -8,11 +8,10 @@ interface CardWithCounterProps {
 }
 
 const CardWithCounter: React.FC<CardWithCounterProps> = ({ title, initialValue }) => {
-  const [count, setCount] = useState(initialValue);
+  const [count] = useState(initialValue);
 
   useEffect(() => {
-    // You can add any logic here to update the count as needed
-    // For example, you might want to fetch data from an API and update the count
+    // Your logic here
   }, []); // Add dependencies as needed
 
   return (

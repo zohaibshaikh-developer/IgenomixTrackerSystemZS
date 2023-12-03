@@ -15,7 +15,7 @@ import {
   Legend,
   BarElement,
 } from 'chart.js';
-import { color } from 'chart.js/helpers';
+// import { color } from 'chart.js/helpers';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, BarElement);
 
