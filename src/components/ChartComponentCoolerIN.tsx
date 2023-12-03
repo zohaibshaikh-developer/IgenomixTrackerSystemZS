@@ -73,7 +73,7 @@ const ChartComponentCoolerIN: React.FC = () => {
         labels: labels,
         datasets: [
           {
-            label: 'Count of Cooler OUT entries',
+            label: 'Count of Cooler IN entries',
             data: counts,
             backgroundColor: 'rgba(254, 168, 47, 0.4)',
             borderColor: 'rgba(254, 168, 47, 1)',

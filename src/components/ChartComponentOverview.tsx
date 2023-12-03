@@ -10,7 +10,7 @@ ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, T
 
 interface ChartData {
   [date: string]: {
-    [status: string]: number;
+    [status: string]: any;
   };
 }
 

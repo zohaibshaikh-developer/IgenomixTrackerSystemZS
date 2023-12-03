@@ -20,7 +20,7 @@ import {
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, BarElement);
 
 interface ChartData {
-  [key: string]: number;
+  [key: string]: any;
 }
 
 const ChartComponentCoolerOUT: React.FC = () => {
