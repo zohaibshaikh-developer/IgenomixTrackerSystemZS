@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { Bar } from 'react-chartjs-2';
 import moment from 'moment';
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, BarElement } from 'chart.js';
-import { color } from 'chart.js/helpers';
+
 
 import BASE_URL from '../config/base_url';
 
@@ -40,7 +40,7 @@ const ChartComponentOverview: React.FC = () => {
       const labels = generateDateLabels();
 
       // Create datasets for both "Completed" and "In Transit" statuses
-      const datasets = ["Completed", "In Transit"].map((status, index) => {
+      const datasets = ["Completed", "In Transit"].map((status) => {
         // Use different RGBA colors for "Completed" and "In Transit"
         const backgroundColor = status === "Completed" ? 'rgba(192, 75, 192, 0.4)' : 'rgba(75,192,192,0.4)';
         const borderColor = status === "Completed" ? 'rgba(192, 75, 192, 1)' : 'rgba(75,192,192,1)';

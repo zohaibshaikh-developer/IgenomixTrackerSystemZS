@@ -93,9 +93,9 @@ const ChartComponentCoolerOUT: React.FC = () => {
   };
 
   // Display loading or error message
-  // if (loading) {
-  //   return <div className='text-left text-black'>Loading...</div>;
-  // }
+  if (loading) {
+    return <div className='text-left text-black'>Loading...</div>;
+  }
 
   if (error) {
     return <div className='text-left text-black'>{error}</div>;
