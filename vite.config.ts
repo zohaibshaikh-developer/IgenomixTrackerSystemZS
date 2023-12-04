@@ -5,5 +5,5 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   base: "/NewIgenomixTrackerSystem-VaihbhavBhaiFrontEnd/",
   plugins: [react()],
-
+  // base: "/",
 })
