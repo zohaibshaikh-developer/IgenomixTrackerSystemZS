@@ -1,6 +1,7 @@
 {
   "name": "igenomix-tracking-front-end",
   "private": true,
+  "homepage": "https://github.com/zohaibshaikh-developer/NewIgenomixTrackerSystem-VaihbhavBhaiFrontEnd.git",
   "version": "0.0.0",
   "type": "module",
   "scripts": {
