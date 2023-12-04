@@ -3,14 +3,13 @@ import Sidebar from '../components/Sidebar';
 import Hamburger from 'hamburger-react';
 import BASE_URL from '../config/base_url';
 import { useLocation } from 'react-router-dom';
-import { FaPencilAlt, FaTrash, FaTimes } from 'react-icons/fa';
+import { FaTrash, FaTimes } from 'react-icons/fa';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import { parse } from 'date-fns';
 
 import axios from 'axios';
 
-const Alert: React.FC<{ message: string; onClose: () => void }> = ({ message, onClose }) => {
+const Alert: React.FC<{ message: string; onClose: () => void }> = ({ message }) => {
     return (
         <div className="fixed top-16 md:top-4 lg:top-4 xl:top-4 left-1/2 transform -translate-x-1/2 bg-green-500 p-4 rounded-md shadow-md">
             <p className="text-white">{message}</p>
@@ -22,16 +21,31 @@ const Alert: React.FC<{ message: string; onClose: () => void }> = ({ message, on
 const UpdateModal: React.FC<{
     isOpen: boolean;
     onClose: () => void;
+    DateSent: any;
+    clinicName: string;
+    coolerID: string;
     SrNo: number;
-    onUpdate: (SrNo: number, DateSent: string, clinicName: string, coolerID: string) => void;
+    onUpdate: (SrNo: number, DateSent: string, clinicName: string, coolerID: string,newSrNo: number) => void;
 }> = ({ isOpen, onClose, SrNo, onUpdate }) => {
 
     const [editableSrNo, setEditableSrNo] = useState(SrNo);
     const [newDateSent, setNewDateSent] = useState(new Date());
     const [selectedClinic, setSelectedClinic] = useState('');
     const [selectedCooler, setSelectedCooler] = useState('');
-    const [clinicList, setClinicList] = useState([]);
-    const [coolerList, setCoolerList] = useState([]);
+    const [newSrNo] = useState(SrNo);
+
+    interface Clinic {
+        rowId: number; // Assuming rowId is of type number, adjust accordingly
+        clinicName: string; // Assuming clinicName is of type string, adjust accordingly
+    }
+
+    const [clinicList, setClinicList] = useState<Clinic[]>([]);
+    interface Cooler {
+        rowId: number; // Assuming rowId is of type number, adjust accordingly
+        coolerID: string; // Assuming coolerID is of type string, adjust accordingly
+    }
+
+    const [coolerList, setCoolerList] = useState<Cooler[]>([]);
     const [submitting, setSubmitting] = useState(false);
 
     useEffect(() => {
@@ -58,19 +72,19 @@ const UpdateModal: React.FC<{
         }
     };
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         setSubmitting(true);
 
-        onUpdate(editableSrNo, newDateSent.toISOString(), selectedClinic, selectedCooler)
-            .then((response) => {
-                setSubmitting(false);
-                onClose();
-            })
-            .catch((error) => {
-                console.error('Error updating clinic:', error);
-                setSubmitting(false);
-            });
+        try {
+            onUpdate(editableSrNo, newDateSent.toISOString(), selectedClinic, selectedCooler, newSrNo);
+            setSubmitting(false);
+            onClose();
+        } catch (error) {
+            console.error('Error updating clinic:', error);
+            setSubmitting(false);
+        }
     };
+
 
     return (
         <div className={`fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 ${isOpen ? 'block' : 'hidden'}`}>
@@ -102,7 +116,7 @@ const UpdateModal: React.FC<{
                         <label className="text-black font-semibold block text-md mb-3">Date Sent</label>
                         <DatePicker
                             selected={newDateSent}
-                            onChange={(date) => setNewDateSent(date)}
+                            onChange={(date) => setNewDateSent(date || new Date())}
                             dateFormat="dd/MM/yyyy"
                             className="w-full p-1.5 input-style"
                             placeholderText="Select Date"
@@ -227,7 +241,7 @@ const ListCoolerOUT: React.FC = () => {
     const [filterText, setFilterText] = useState('');
 
     const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
-    const [selectedDeleteclinic, setSelectedDeleteclinic] = useState({ SrNo: 0, clinicName: '' });
+    const [selectedDeleteclinic, setSelectedDeleteclinic] = useState({ SrNo: 0, clinicName: '', DateSent: '', coolerID: '' });
 
 
 
@@ -241,25 +255,18 @@ const ListCoolerOUT: React.FC = () => {
     const [filteredclinics, setFilteredclinics] = useState<any[]>(clinics);
 
     const [isUpdateModalOpen, setUpdateModalOpen] = useState(false);
-    const [selectedclinic, setSelectedclinic] = useState({ SrNo: 0, clinicName: '' });
-
-    const handleEdit = (coolerOUT) => {
-        setUpdateModalOpen(true);
-        setSelectedclinic((prevclinic) => ({ ...prevclinic, SrNo: coolerOUT.Sr_No, DateSent: coolerOUT.DateSent, clinicName: coolerOUT.clinicName, coolerID: coolerOUT.coolerID }));
-
-        const activeElement = document.activeElement as HTMLElement;
-        if (activeElement instanceof HTMLElement) {
-            activeElement.blur();
-        }
-    };
+    const [selectedclinic] = useState({ SrNo: 0, clinicName: '', DateSent: '', coolerID: '' });
 
 
-    const handleUpdate = async (SrNo, DateSent, clinicName, coolerID, newSrNo) => {
+
+    const handleUpdate = async (SrNo: number, DateSent: string, clinicName: string, coolerID: string,newSrNo: number) => {
 
         try {
             const response = await axios.put(`${BASE_URL}/update-clinicBySr_No/${SrNo}`, {
                 clinicSr_No: newSrNo,
                 clinicName: clinicName,
+                DateSent: DateSent,
+                coolerID:coolerID,
             });
 
             if (response.data.status === 200) {
@@ -346,7 +353,7 @@ const ListCoolerOUT: React.FC = () => {
             });
     }
 
-    const handleDelete = (SrNo, DateSent, clinicName, CoolerID) => {
+    const handleDelete = (SrNo: any, DateSent: any, clinicName: any, CoolerID: any) => {
 
         setSelectedDeleteclinic((prevclinic) => ({ ...prevclinic, SrNo, DateSent, clinicName, CoolerID }));
         setDeleteModalOpen(true);
@@ -357,7 +364,7 @@ const ListCoolerOUT: React.FC = () => {
         }
     }
 
-    const handleDeleteConfirm = async (SrNo) => {
+    const handleDeleteConfirm = async (SrNo: any) => {
         try {
             const response = await axios.delete(`${BASE_URL}/delete-coolerOUTBySr_No/${SrNo}`);
             if (response.data.status === 200) {
@@ -374,7 +381,7 @@ const ListCoolerOUT: React.FC = () => {
         }
     };
 
-    const [focusElement, setFocusElement] = useState<HTMLElement | null>(null);
+    const [, setFocusElement] = useState<HTMLElement | null>(null);
 
 
     return (
@@ -386,7 +393,9 @@ const ListCoolerOUT: React.FC = () => {
                 </div>
                 // </div>
             )}
-            {alert.visible && <Alert message={alert.message} />}
+            {alert.visible && <Alert message={alert.message} onClose={function (): void {
+                throw new Error('Function not implemented.');
+            } } />}
 
             {isLoading && (
                 <div className="loader-container">
@@ -446,7 +455,7 @@ const ListCoolerOUT: React.FC = () => {
                                 SrNo={selectedDeleteclinic.SrNo}
                                 DateSent={selectedDeleteclinic.DateSent}
                                 clinicName={selectedDeleteclinic.clinicName}
-                                coolerID={selectedDeleteclinic.CoolerID}
+                                coolerID={selectedDeleteclinic.coolerID}
                             />
 
                         </div>

@@ -7,7 +7,7 @@ import { FaPencilAlt, FaTrash, FaTimes } from 'react-icons/fa';
 
 import axios from 'axios';
 
-const Alert: React.FC<{ message: string; onClose: () => void }> = ({ message, onClose }) => {
+const Alert: React.FC<{ message: string; onClose: () => void }> = ({ message }) => {
     return (
         <div className="fixed top-16 md:top-4 lg:top-4 xl:top-4 left-1/2 transform -translate-x-1/2 bg-green-500 p-4 rounded-md shadow-md">
             <p className="text-white">{message}</p>
@@ -21,7 +21,7 @@ const UpdateclinicModal: React.FC<{
     onClose: () => void;
     SrNo: number;
     clinicName: string;
-    onUpdate: (SrNo: number, clinicName: string) => void;
+    onUpdate: (SrNo: number, clinicName: string, newSrNo: number) => void;
 }> = ({ isOpen, onClose, SrNo, clinicName, onUpdate }) => {
     const [newSrNo, setNewSrNo] = useState(SrNo);
     const [newclinicName, setNewclinicName] = useState(clinicName);
@@ -32,22 +32,20 @@ const UpdateclinicModal: React.FC<{
         setNewclinicName(clinicName);
     }, [SrNo, clinicName]);
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         setSubmitting(true); // Set submitting to true on form submission
 
-
-        onUpdate(SrNo, newclinicName, newSrNo)// Pass newSrNo to the onUpdate function
-            .then((response) => {
-                // Handle success
-                setSubmitting(false); // Reset submitting state on success
-                onClose();
-            })
-            .catch((error) => {
-                // Handle error
-                console.error('Error updating clinic:', error);
-                setSubmitting(false); // Reset submitting state on error
-                // You can also show an error message to the user here
-            })
+        try {
+            await onUpdate(SrNo, newclinicName, newSrNo); // Wait for the Promise to resolve
+            // Handle success
+            setSubmitting(false); // Reset submitting state on success
+            onClose();
+        } catch (error) {
+            // Handle error
+            console.error('Error updating clinic:', error);
+            setSubmitting(false); // Reset submitting state on error
+            // You can also show an error message to the user here
+        }
     };
 
     return (
@@ -69,12 +67,12 @@ const UpdateclinicModal: React.FC<{
                         <label className="block text-lg font-medium text-white text-start mb-3">clinic Sr_No</label>
                         <input
                             type="text"
-                            value={newSrNo}
-                            // readOnly
-                            onChange={(e) => setNewSrNo(e.target.value)}
+                            value={newSrNo.toString()} // Ensure that the value is a string
+                            onChange={(e) => setNewSrNo(parseInt(e.target.value, 10) || 0)} // Convert to number
                             className="mt-1 p-2 w-full border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-300"
                         />
                     </div>
+
                     <div className="mb-4">
                         <label className="block text-lg font-medium text-white text-start mb-3">clinic Name</label>
                         <input
@@ -123,38 +121,38 @@ const DeleteConfirmationModal: React.FC<{
     onDelete: (SrNo: number) => void;
     SrNo: number;
     clinicName: string;
-  }> = ({ isOpen, onClose, onDelete, SrNo, clinicName }) => {
+}> = ({ isOpen, onClose, onDelete, SrNo, clinicName }) => {
     const handleDelete = () => {
-      onDelete(SrNo);
-      onClose();
+        onDelete(SrNo);
+        onClose();
     };
 
-    
+
     return (
-      <div className={`fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 ${isOpen ? 'block' : 'hidden'}`}>
-        <div className="p-6 rounded-xl shadow-md w-96" style={{ background: 'linear-gradient(135deg, #ff5252, #ff7675)' }}>
-        
-          <h2 className="text-2xl font-semibold mb-4 text-white">Delete clinic</h2>
-          <p className="text-white">Are you sure you want to delete clinic : <br></br> <br></br>Sr_No:  {SrNo} <br></br>Clinic Name : {clinicName}</p>
-          <div className="flex items-center justify-center mt-8">
-            <button
-              className="btn-hoverFormSubmit color-1 mr-2"
-              onClick={handleDelete}
-            >
-              Yes
-            </button>
-            <button
-              className="btn-hoverFormSubmit color-2"
-              onClick={onClose}
-            >
-              No
-            </button>
-          </div>
+        <div className={`fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 ${isOpen ? 'block' : 'hidden'}`}>
+            <div className="p-6 rounded-xl shadow-md w-96" style={{ background: 'linear-gradient(135deg, #ff5252, #ff7675)' }}>
+
+                <h2 className="text-2xl font-semibold mb-4 text-white">Delete clinic</h2>
+                <p className="text-white">Are you sure you want to delete clinic : <br></br> <br></br>Sr_No:  {SrNo} <br></br>Clinic Name : {clinicName}</p>
+                <div className="flex items-center justify-center mt-8">
+                    <button
+                        className="btn-hoverFormSubmit color-1 mr-2"
+                        onClick={handleDelete}
+                    >
+                        Yes
+                    </button>
+                    <button
+                        className="btn-hoverFormSubmit color-2"
+                        onClick={onClose}
+                    >
+                        No
+                    </button>
+                </div>
+            </div>
         </div>
-      </div>
     );
-  };
-  
+};
+
 
 
 
@@ -184,7 +182,7 @@ const Listclinic: React.FC = () => {
     const [isUpdateModalOpen, setUpdateModalOpen] = useState(false);
     const [selectedclinic, setSelectedclinic] = useState({ SrNo: 0, clinicName: '' });
 
-    const handleEdit = (Sr_No, name) => {
+    const handleEdit = (Sr_No: any, name: any) => {
         setUpdateModalOpen(true);
         setSelectedclinic((prevclinic) => ({ ...prevclinic, SrNo: Sr_No, clinicName: name }));
 
@@ -195,7 +193,7 @@ const Listclinic: React.FC = () => {
         }
     };
 
-    const handleUpdate = async (SrNo, clinicName, newSrNo) => {
+    const handleUpdate = async (SrNo: any, clinicName: any, newSrNo: any) => {
 
         try {
             const response = await axios.put(`${BASE_URL}/update-clinicBySr_No/${SrNo}`, {
@@ -287,8 +285,8 @@ const Listclinic: React.FC = () => {
             });
     }
 
-    const handleDelete = (SrNo, clinicName) => {
-        
+    const handleDelete = (SrNo: any, clinicName: any) => {
+
         setSelectedDeleteclinic((prevclinic) => ({ ...prevclinic, SrNo, clinicName }));
         setDeleteModalOpen(true);
 
@@ -298,7 +296,7 @@ const Listclinic: React.FC = () => {
         }
     }
 
-    const handleDeleteConfirm = async (SrNo) => {
+    const handleDeleteConfirm = async (SrNo: any) => {
         try {
             const response = await axios.delete(`${BASE_URL}/delete-clinicBySr_No/${SrNo}`);
             if (response.data.status === 200) {
@@ -315,7 +313,7 @@ const Listclinic: React.FC = () => {
         }
     };
 
-    const [focusElement, setFocusElement] = useState<HTMLElement | null>(null);
+    const [, setFocusElement] = useState<HTMLElement | null>(null);
 
 
     return (
@@ -327,7 +325,9 @@ const Listclinic: React.FC = () => {
                 </div>
                 // </div>
             )}
-            {alert.visible && <Alert message={alert.message} />}
+            {alert.visible && <Alert message={alert.message} onClose={function (): void {
+                throw new Error('Function not implemented.');
+            }} />}
 
             {isLoading && (
                 <div className="loader-container">
@@ -427,7 +427,7 @@ const Listclinic: React.FC = () => {
                                                         <button
                                                             className="mr-2 bg-transparent border-none p-2"
                                                             onClick={() => {
-                                                                handleDelete(clinic.Sr_No,clinic.clinicName);
+                                                                handleDelete(clinic.Sr_No, clinic.clinicName);
                                                                 setFocusElement(document.body); // Set focus to body after button click
                                                             }}
 

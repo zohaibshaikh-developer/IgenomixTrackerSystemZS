@@ -3,11 +3,11 @@ import Sidebar from '../components/Sidebar';
 import Hamburger from 'hamburger-react';
 import BASE_URL from '../config/base_url';
 import { useLocation } from 'react-router-dom';
-import { FaPencilAlt, FaTrash, FaTimes } from 'react-icons/fa';
+import { FaTrash, FaTimes } from 'react-icons/fa';
 
 import axios from 'axios';
 
-const Alert: React.FC<{ message: string; onClose: () => void }> = ({ message, onClose }) => {
+const Alert: React.FC<{ message: string; onClose: () => void }> = ({ message }) => {
     return (
         <div className="fixed top-16 md:top-4 lg:top-4 xl:top-4 left-1/2 transform -translate-x-1/2 bg-green-500 p-4 rounded-md shadow-md">
             <p className="text-white">{message}</p>
@@ -21,7 +21,7 @@ const UpdateoverviewModal: React.FC<{
     onClose: () => void;
     overviewId: number;
     overviewName: string;
-    onUpdate: (overviewId: number, overviewName: string) => void;
+    onUpdate: (overviewId: number, overviewName: string, newoverviewId: number) => void;
 }> = ({ isOpen, onClose, overviewId, overviewName, onUpdate }) => {
     const [newoverviewId, setNewoverviewId] = useState(overviewId);
     const [newoverviewName, setNewoverviewName] = useState(overviewName);
@@ -32,23 +32,26 @@ const UpdateoverviewModal: React.FC<{
         setNewoverviewName(overviewName);
     }, [overviewId, overviewName]);
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         setSubmitting(true); // Set submitting to true on form submission
 
+        try {
+            const response = await onUpdate(overviewId, newoverviewName, newoverviewId);
 
-        onUpdate(overviewId, newoverviewName, newoverviewId)// Pass newoverviewId to the onUpdate function
-            .then((response) => {
-                // Handle success
-                setSubmitting(false); // Reset submitting state on success
-                onClose();
-            })
-            .catch((error) => {
-                // Handle error
-                console.error('Error updating overview:', error);
-                setSubmitting(false); // Reset submitting state on error
-                // You can also show an error message to the user here
-            })
+            // Handle success
+            setSubmitting(false); // Reset submitting state on success
+            onClose();
+
+            // You can access the response here if needed
+            console.log('Update response:', response);
+        } catch (error) {
+            // Handle error
+            console.error('Error updating overview:', error);
+            setSubmitting(false); // Reset submitting state on error
+            // You can also show an error message to the user here
+        }
     };
+
 
     return (
         <div className={`fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 ${isOpen ? 'block' : 'hidden'}`}>
@@ -71,7 +74,7 @@ const UpdateoverviewModal: React.FC<{
                             type="text"
                             value={newoverviewId}
                             // readOnly
-                            onChange={(e) => setNewoverviewId(e.target.value)}
+                            onChange={(e) => setNewoverviewId(Number(e.target.value))} // Convert the string to a number
                             className="mt-1 p-2 w-full border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-300"
                         />
                     </div>
@@ -182,20 +185,10 @@ const ListOverview: React.FC = () => {
     const [filteredoverviews, setFilteredoverviews] = useState<any[]>(overviews);
 
     const [isUpdateModalOpen, setUpdateModalOpen] = useState(false);
-    const [selectedoverview, setSelectedoverview] = useState({ overviewId: 0, overviewName: '' });
-
-    const handleEdit = (id, name) => {
-        setUpdateModalOpen(true);
-        setSelectedoverview((prevoverview) => ({ ...prevoverview, overviewId: id, overviewName: name }));
+    const [selectedoverview] = useState({ overviewId: 0, overviewName: '' });
 
 
-        const activeElement = document.activeElement as HTMLElement;
-        if (activeElement instanceof HTMLElement) {
-            activeElement.blur();
-        }
-    };
-
-    const handleUpdate = async (overviewId, overviewName, newoverviewId) => {
+    const handleUpdate = async (overviewId: any, overviewName: any, newoverviewId: any) => {
 
         try {
             const response = await axios.put(`${BASE_URL}/update-overview/${overviewId}`, {
@@ -287,7 +280,7 @@ const ListOverview: React.FC = () => {
             });
     }
 
-    const handleDelete = (overviewId, overviewName) => {
+    const handleDelete = (overviewId: any, overviewName: any) => {
 
         setSelectedDeleteoverview((prevoverview) => ({ ...prevoverview, overviewId, overviewName }));
         setDeleteModalOpen(true);
@@ -298,7 +291,7 @@ const ListOverview: React.FC = () => {
         }
     }
 
-    const handleDeleteConfirm = async (overviewId) => {
+    const handleDeleteConfirm = async (overviewId: any) => {
         try {
             const response = await axios.delete(`${BASE_URL}/delete-overviewBySrNo/${overviewId}`);
             if (response.data.status === 200) {
@@ -315,7 +308,7 @@ const ListOverview: React.FC = () => {
         }
     };
 
-    const [focusElement, setFocusElement] = useState<HTMLElement | null>(null);
+    const [, setFocusElement] = useState<HTMLElement | null>(null);
 
 
     return (
@@ -327,7 +320,9 @@ const ListOverview: React.FC = () => {
                 </div>
                 // </div>
             )}
-            {alert.visible && <Alert message={alert.message} />}
+            {alert.visible && <Alert message={alert.message} onClose={function (): void {
+                throw new Error('Function not implemented.');
+            } } />}
 
             {isLoading && (
                 <div className="loader-container">
@@ -449,7 +444,7 @@ const ListOverview: React.FC = () => {
                                                         <button
                                                             className="mr-2 bg-transparent border-none p-2"
                                                             onClick={() => {
-                                                                handleDelete(overview.Sr_No,overview.clinicName);
+                                                                handleDelete(overview.Sr_No, overview.clinicName);
                                                                 setFocusElement(document.body); // Set focus to body after button click
                                                             }}
 

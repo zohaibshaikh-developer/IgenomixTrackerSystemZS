@@ -1,5 +1,5 @@
 // LoginAndSignupForm.tsx
-import { useState,useEffect } from 'react';
+import { useState,useEffect, SetStateAction} from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import * as Components from "../components/LoginAndSignup";
@@ -7,7 +7,7 @@ import '../App.css';
 import LogoImage from '../assets/IGENOMIX_PartOfVitrolifeGroup_black.png';
 import VideoSource from '../assets/genetic_video.mp4';
 import BASE_URL from '../config/base_url';
-import SuccessFlashMessage from '../components/SuccessFlashMessage';
+import React from 'react';
 
 const LoginAndSignupForm: React.FC = () => {
   const navigate = useNavigate();
@@ -20,15 +20,10 @@ const LoginAndSignupForm: React.FC = () => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
   const [registrationSuccess, setRegistrationSuccess] = useState(false);
-  const [flashMessage, setFlashMessage] = useState<string | null>(null);
 
-
-  const handleTogglePassword = () => {
-    setShowPassword((prevShowPassword) => !prevShowPassword);
-  };
 
   
-  const handleSignIn = async (event) => {
+  const handleSignIn = async (event: { preventDefault: () => void; }) => {
     event.preventDefault();
 
     try {
@@ -57,7 +52,7 @@ const LoginAndSignupForm: React.FC = () => {
   };
 
 
-  const handleSignUp = async (event) => {
+  const handleSignUp = async (event: { preventDefault: () => void; }) => {
     event.preventDefault();
 
     try {
@@ -81,7 +76,7 @@ const LoginAndSignupForm: React.FC = () => {
         console.log(result.message); // "Registration successful"
         setErrorMessage(null); // Clear any previous error message
         setRegistrationSuccess(true); // Set registration success flag
-        setFlashMessage('Registration successful!'); // Set the flash message
+
       } else {
         console.log(result.message); // Handle other status codes or error messages
         setErrorMessage(result.message); // Set the error message for rendering
@@ -92,9 +87,6 @@ const LoginAndSignupForm: React.FC = () => {
     }
   };
 
-  const closeFlashMessage = () => {
-    setFlashMessage(null);
-  };
 
 
   useEffect(() => {
@@ -118,35 +110,35 @@ const LoginAndSignupForm: React.FC = () => {
               name="Name"
               placeholder="Name"
               value={name}
-              onChange={(e) => setName(e.target.value)}
+              onChange={(e: { target: { value: SetStateAction<string>; }; }) => setName(e.target.value)}
             />
             <Components.Input
               type="email"
               name="Email"
               placeholder="Email"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e: { target: { value: SetStateAction<string>; }; }) => setEmail(e.target.value)}
             />
             <Components.Input
               type="text"
               name="ContactNo"
               placeholder="Contact Number"
               value={contactNumber}
-              onChange={(e) => setContactNumber(e.target.value)}
+              onChange={(e: { target: { value: SetStateAction<string>; }; }) => setContactNumber(e.target.value)}
             />
             <Components.Input
               type="text"
               name="Username"
               placeholder="Username"
               value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              onChange={(e: { target: { value: SetStateAction<string>; }; }) => setUsername(e.target.value)}
             />
             <Components.Input
               type={showPassword ? "text" : "password"}
               name="PasswordRegister"
               placeholder="Password"
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={(e: { target: { value: SetStateAction<string>; }; }) => setPassword(e.target.value)}
             />
             <span
             style={{ cursor: 'pointer' ,color:'black', alignSelf: 'flex-end' , backgroundColor: '#6EF3D6', padding: '0.6%', fontWeight: 'bold' , borderRadius: '6%', fontSize: '85%'}}
@@ -177,14 +169,14 @@ const LoginAndSignupForm: React.FC = () => {
               name="Username"
               placeholder="Username"
               value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              onChange={(e: { target: { value: SetStateAction<string>; }; }) => setUsername(e.target.value)}
             />
             <Components.Input
             type={showPassword ? "text" : "password"}
             name="Password"
             placeholder="Password"
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={(e: { target: { value: SetStateAction<string>; }; }) => setPassword(e.target.value)}
           />
           <span
             style={{ cursor: 'pointer' ,color:'black', alignSelf: 'flex-end' , backgroundColor: '#6EF3D6', padding: '0.6%', fontWeight: 'bold' , borderRadius: '6%', fontSize: '85%'}}
@@ -203,7 +195,7 @@ const LoginAndSignupForm: React.FC = () => {
         <Components.OverlayContainer signingIn={signIn}>
           <Components.Overlay signingIn={signIn}>
             <Components.LeftOverlayPanel signingIn={signIn}>
-              <Components.Logo src={LogoImage} alt="Logo" draggable={false} onContextMenu={(e) => e.preventDefault()} />
+              <Components.Logo src={LogoImage} alt="Logo" draggable={false} onContextMenu={(e: { preventDefault: () => any; }) => e.preventDefault()} />
               <Components.Title>Welcome Back to Igenomix Tracking System</Components.Title>
               <Components.Paragraph>
                 To stay connected with us and access your account, please log in with your personal information.
@@ -213,7 +205,7 @@ const LoginAndSignupForm: React.FC = () => {
               </Components.GhostButton>
             </Components.LeftOverlayPanel>
             <Components.RightOverlayPanel signingIn={signIn}>
-              <Components.Logo src={LogoImage} alt="Logo" draggable={false} onContextMenu={(e) => e.preventDefault()} />
+              <Components.Logo src={LogoImage} alt="Logo" draggable={false} onContextMenu={(e: { preventDefault: () => any; }) => e.preventDefault()} />
               <Components.Title>Welcome to Igenomix Tracking System</Components.Title>
               <Components.Paragraph>
                 Enter your personal details and start the journey with us

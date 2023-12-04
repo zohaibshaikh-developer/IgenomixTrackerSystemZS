@@ -7,7 +7,7 @@ import { FaPencilAlt, FaTrash, FaTimes } from 'react-icons/fa';
 
 import axios from 'axios';
 
-const Alert: React.FC<{ message: string; onClose: () => void }> = ({ message, onClose }) => {
+const Alert: React.FC<{ message: string; onClose: () => void }> = ({ message }) => {
     return (
         <div className="fixed top-16 md:top-4 lg:top-4 xl:top-4 left-1/2 transform -translate-x-1/2 bg-green-500 p-4 rounded-md shadow-md">
             <p className="text-white">{message}</p>
@@ -21,7 +21,7 @@ const UpdateCoolerModal: React.FC<{
     onClose: () => void;
     coolerId: number;
     coolerName: string;
-    onUpdate: (coolerId: number, coolerName: string) => void;
+    onUpdate: (coolerId: number, coolerName: string, newCoolerId: number) => void;
 }> = ({ isOpen, onClose, coolerId, coolerName, onUpdate }) => {
     const [newCoolerId, setNewCoolerId] = useState(coolerId);
     const [newCoolerName, setNewCoolerName] = useState(coolerName);
@@ -32,22 +32,20 @@ const UpdateCoolerModal: React.FC<{
         setNewCoolerName(coolerName);
     }, [coolerId, coolerName]);
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         setSubmitting(true); // Set submitting to true on form submission
 
-
-        onUpdate(coolerId, newCoolerName, newCoolerId)// Pass newCoolerId to the onUpdate function
-            .then((response) => {
-                // Handle success
-                setSubmitting(false); // Reset submitting state on success
-                onClose();
-            })
-            .catch((error) => {
-                // Handle error
-                console.error('Error updating cooler:', error);
-                setSubmitting(false); // Reset submitting state on error
-                // You can also show an error message to the user here
-            })
+        try {
+            await onUpdate(coolerId, newCoolerName, newCoolerId); // Wait for the Promise to resolve
+            // Handle success
+            setSubmitting(false); // Reset submitting state on success
+            onClose();
+        } catch (error) {
+            // Handle error
+            console.error('Error updating clinic:', error);
+            setSubmitting(false); // Reset submitting state on error
+            // You can also show an error message to the user here
+        }
     };
 
     return (
@@ -71,7 +69,7 @@ const UpdateCoolerModal: React.FC<{
                             type="text"
                             value={newCoolerId}
                             // readOnly
-                            onChange={(e) => setNewCoolerId(e.target.value)}
+                            onChange={(e) => setNewCoolerId(parseInt(e.target.value, 10) || 0)} // Convert to number
                             className="mt-1 p-2 w-full border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-300"
                         />
                     </div>
@@ -184,7 +182,7 @@ const ListCooler: React.FC = () => {
     const [isUpdateModalOpen, setUpdateModalOpen] = useState(false);
     const [selectedCooler, setSelectedCooler] = useState({ coolerId: 0, coolerName: '' });
 
-    const handleEdit = (id, name) => {
+    const handleEdit = (id: any, name: any) => {
         setUpdateModalOpen(true);
         setSelectedCooler((prevCooler) => ({ ...prevCooler, coolerId: id, coolerName: name }));
 
@@ -195,7 +193,7 @@ const ListCooler: React.FC = () => {
         }
     };
 
-    const handleUpdate = async (coolerId, coolerName, newCoolerId) => {
+    const handleUpdate = async (coolerId: any, coolerName: any, newCoolerId: any) => {
 
         try {
             const response = await axios.put(`${BASE_URL}/update-cooler/${coolerId}`, {
@@ -287,7 +285,7 @@ const ListCooler: React.FC = () => {
             });
     }
 
-    const handleDelete = (coolerId, coolerName) => {
+    const handleDelete = (coolerId: any, coolerName: any) => {
         
         setSelectedDeleteCooler((prevCooler) => ({ ...prevCooler, coolerId, coolerName }));
         setDeleteModalOpen(true);
@@ -298,7 +296,7 @@ const ListCooler: React.FC = () => {
         }
     }
 
-    const handleDeleteConfirm = async (coolerId) => {
+    const handleDeleteConfirm = async (coolerId: any) => {
         try {
             const response = await axios.delete(`${BASE_URL}/delete-cooler/${coolerId}`);
             if (response.data.status === 200) {
@@ -315,7 +313,7 @@ const ListCooler: React.FC = () => {
         }
     };
 
-    const [focusElement, setFocusElement] = useState<HTMLElement | null>(null);
+    const [, setFocusElement] = useState<HTMLElement | null>(null);
 
 
     return (
@@ -327,7 +325,9 @@ const ListCooler: React.FC = () => {
                 </div>
                 // </div>
             )}
-            {alert.visible && <Alert message={alert.message} />}
+            {alert.visible && <Alert message={alert.message} onClose={function (): void {
+                throw new Error('Function not implemented.');
+            } } />}
 
             {isLoading && (
                 <div className="loader-container">

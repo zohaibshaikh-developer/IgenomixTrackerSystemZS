@@ -3,14 +3,13 @@ import Sidebar from '../components/Sidebar';
 import Hamburger from 'hamburger-react';
 import BASE_URL from '../config/base_url';
 import { useLocation } from 'react-router-dom';
-import { FaPencilAlt, FaTrash, FaTimes } from 'react-icons/fa';
+import { FaTrash, FaTimes } from 'react-icons/fa';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import { parse } from 'date-fns';
 
 import axios from 'axios';
 
-const Alert: React.FC<{ message: string; onClose: () => void }> = ({ message, onClose }) => {
+const Alert: React.FC<{ message: string; onClose: () => void }> = ({ message }) => {
     return (
         <div className="fixed top-16 md:top-4 lg:top-4 xl:top-4 left-1/2 transform -translate-x-1/2 bg-green-500 p-4 rounded-md shadow-md">
             <p className="text-white">{message}</p>
@@ -23,15 +22,26 @@ const UpdateModal: React.FC<{
     isOpen: boolean;
     onClose: () => void;
     SrNo: number;
-    onUpdate: (SrNo: number, DateSent: string, coolerINName: string, coolerID: string) => void;
-}> = ({ isOpen, onClose, SrNo, onUpdate }) => {
+    DateSent: string;
+    coolerINName: string;
+    coolerID: string;
+    onUpdate: (
+      SrNo: number,
+      DateSent: string,
+      coolerINName: string,
+      coolerID: string,
+      newSrNo: any
+    ) => Promise<any>;
+  }> = ({ isOpen, onClose, SrNo, onUpdate }) => {
 
     const [editableSrNo, setEditableSrNo] = useState(SrNo);
     const [newDateSent, setNewDateSent] = useState(new Date());
     const [selectedcoolerIN, setSelectedcoolerIN] = useState('');
     const [selectedCooler, setSelectedCooler] = useState('');
-    const [coolerINList, setcoolerINList] = useState([]);
-    const [coolerList, setCoolerList] = useState([]);
+    const [coolerINList, setCoolerINList] = useState<{ rowId: number; coolerINName: string }[]>([]);
+    const [coolerList, setCoolerList] = useState<{ rowId: number; coolerID: string }[]>([]);
+    const [newSrNo] = useState(""); // Set the initial value as needed
+
     const [submitting, setSubmitting] = useState(false);
 
     useEffect(() => {
@@ -43,7 +53,7 @@ const UpdateModal: React.FC<{
     const ListcoolerINData = async () => {
         try {
             const response = await axios.get(`${BASE_URL}/list-coolersIN`);
-            setcoolerINList(response.data.data);
+            setCoolerINList(response.data.data);
         } catch (error) {
             console.error('Error fetching coolerIN list:', error);
         }
@@ -51,8 +61,8 @@ const UpdateModal: React.FC<{
 
     const ListCoolerData = async () => {
         try {
-            const response = await axios.get(`${BASE_URL}/list-coolers`);
-            setCoolerList(response.data.data);
+            const responseCoolers = await axios.get(`${BASE_URL}/list-coolers`);
+            setCoolerList(responseCoolers.data.data);
         } catch (error) {
             console.error('Error fetching cooler list:', error);
         }
@@ -60,16 +70,24 @@ const UpdateModal: React.FC<{
 
     const handleSubmit = () => {
         setSubmitting(true);
+      
+        onUpdate(editableSrNo, newDateSent.toISOString(), selectedcoolerIN, selectedCooler, newSrNo)
 
-        onUpdate(editableSrNo, newDateSent.toISOString(), selectedcoolerIN, selectedCooler)
-            .then((response) => {
-                setSubmitting(false);
-                onClose();
-            })
-            .catch((error) => {
-                console.error('Error updating coolerIN:', error);
-                setSubmitting(false);
-            });
+          .then((_response: any) => {
+            setSubmitting(false);
+            onClose();
+          })
+          .catch((error: any) => {
+            console.error('Error updating coolerIN:', error);
+            setSubmitting(false);
+          });
+      };
+      
+
+    const handleDateChange = (date: Date | null) => {
+        // If date is null, set a default date or handle it as needed
+        // For example, setting it to the current date:
+        setNewDateSent(date || new Date());
     };
 
     return (
@@ -102,7 +120,7 @@ const UpdateModal: React.FC<{
                         <label className="text-black font-semibold block text-md mb-3">Date Sent</label>
                         <DatePicker
                             selected={newDateSent}
-                            onChange={(date) => setNewDateSent(date)}
+                            onChange={handleDateChange}
                             dateFormat="dd/MM/yyyy"
                             className="w-full p-1.5 input-style"
                             placeholderText="Select Date"
@@ -179,9 +197,9 @@ const DeleteConfirmationModal: React.FC<{
     onClose: () => void;
     onDelete: (SrNo: number) => void;
     SrNo: number;
-    DateReceived: string; // Add DateReceived prop
-    Quantity: number; // Add Quantity prop
-    coolerID: string;
+    DateReceived?: string; // Make it optional if it can be undefined
+    Quantity?: number; // Make it optional if it can be undefined
+    coolerID?: string; // Make it optional if it can be undefined
 }> = ({ isOpen, onClose, onDelete, SrNo, DateReceived, Quantity, coolerID }) => {
     const handleDelete = () => {
         onDelete(SrNo);
@@ -218,17 +236,24 @@ const DeleteConfirmationModal: React.FC<{
 
 
 
+
 const ListCoolerIN: React.FC = () => {
     const [isSidebarOpen, setSidebarOpen] = useState(false);
     const [isBodyOverflowHidden, setBodyOverflowHidden] = useState(false);
     const [alert, setAlert] = useState<{ message: string; visible: boolean }>({ message: '', visible: false });
     const [coolersIN, setcoolersIN] = useState<any[]>([]);
+
     const location = useLocation();
     const [filterText, setFilterText] = useState('');
 
     const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
-    const [selectedDeletecoolerIN, setSelectedDeletecoolerIN] = useState({ SrNo: 0, coolerINName: '' });
-
+    const [selectedDeletecoolerIN, setSelectedDeletecoolerIN] = useState({
+        SrNo: 0,
+        coolerINName: '',
+        DateReceived: '', // Add DateReceived field
+        Quantity: 0, // Add Quantity field
+        coolerID: '', // Add coolerID field
+      });
 
 
     const toggleSidebar = () => {
@@ -241,20 +266,15 @@ const ListCoolerIN: React.FC = () => {
     const [filteredcoolersIN, setFilteredcoolersIN] = useState<any[]>(coolersIN);
 
     const [isUpdateModalOpen, setUpdateModalOpen] = useState(false);
-    const [selectedcoolerIN, setSelectedcoolerIN] = useState({ SrNo: 0, coolerINName: '' });
-
-    const handleEdit = (coolerIN) => {
-        setUpdateModalOpen(true);
-        setSelectedcoolerIN((prevcoolerIN) => ({ ...prevcoolerIN, SrNo: coolerIN.Sr_No, DateSent: coolerIN.DateSent, coolerINName: coolerIN.coolerINName, coolerID: coolerIN.coolerID }));
-
-        const activeElement = document.activeElement as HTMLElement;
-        if (activeElement instanceof HTMLElement) {
-            activeElement.blur();
-        }
-    };
+    const [selectedcoolerIN] = useState({
+        SrNo: 0,
+        coolerINName: '',
+        DateSent: '', // Initialize with a default value or leave it as an empty string
+        coolerID: '', // Initialize with a default value or leave it as an empty string
+    });
 
 
-    const handleUpdate = async (SrNo, DateSent, coolerINName, coolerID, newSrNo) => {
+    const handleUpdate = async (SrNo: any, _DateSent: any, coolerINName: any, _coolerID: any, newSrNo: any) => {
 
         try {
             const response = await axios.put(`${BASE_URL}/update-coolerINBySr_No/${SrNo}`, {
@@ -346,7 +366,7 @@ const ListCoolerIN: React.FC = () => {
             });
     }
 
-    const handleDelete = (SrNo, DateReceived, Quantity, CoolerID) => {
+    const handleDelete = (SrNo: any, DateReceived: any, Quantity: any, CoolerID: any) => {
 
         setSelectedDeletecoolerIN((prevcoolerIN) => ({ ...prevcoolerIN, SrNo, DateReceived, Quantity, CoolerID }));
         setDeleteModalOpen(true);
@@ -357,7 +377,7 @@ const ListCoolerIN: React.FC = () => {
         }
     }
 
-    const handleDeleteConfirm = async (SrNo) => {
+    const handleDeleteConfirm = async (SrNo: any) => {
         try {
             const response = await axios.delete(`${BASE_URL}/delete-coolerINBySr_No/${SrNo}`);
             if (response.data.status === 200) {
@@ -374,7 +394,7 @@ const ListCoolerIN: React.FC = () => {
         }
     };
 
-    const [focusElement, setFocusElement] = useState<HTMLElement | null>(null);
+    const [, setFocusElement] = useState<HTMLElement | null>(null);
 
 
     return (
@@ -386,7 +406,9 @@ const ListCoolerIN: React.FC = () => {
                 </div>
                 // </div>
             )}
-            {alert.visible && <Alert message={alert.message} />}
+            {alert.visible && <Alert message={alert.message} onClose={function (): void {
+                throw new Error('Function not implemented.');
+            }} />}
 
             {isLoading && (
                 <div className="loader-container">
@@ -432,6 +454,8 @@ const ListCoolerIN: React.FC = () => {
                                 onUpdate={handleUpdate}
                             />
 
+
+
                         </div>
 
 
@@ -446,7 +470,7 @@ const ListCoolerIN: React.FC = () => {
                                 SrNo={selectedDeletecoolerIN.SrNo}
                                 DateReceived={selectedDeletecoolerIN.DateReceived}
                                 Quantity={selectedDeletecoolerIN.Quantity}
-                                coolerID={selectedDeletecoolerIN.CoolerID}
+                                coolerID={selectedDeletecoolerIN.coolerID}
                             />
 
 
