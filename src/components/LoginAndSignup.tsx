@@ -1,5 +1,5 @@
 // Components.tsx
-import React, { InputHTMLAttributes,ButtonHTMLAttributes,ImgHTMLAttributes } from 'react';
+import React, { InputHTMLAttributes, ButtonHTMLAttributes, ImgHTMLAttributes } from 'react';
 import styled from "@emotion/styled";
 
 
@@ -236,9 +236,9 @@ interface OverlayProps {
 }
 
 export const Overlay = styled.div<OverlayProps>`
-  background: #0DCEDA;
-  background: -webkit-linear-gradient(to right, #6EF3D6, #0DCEDA);
-  background: linear-gradient(to right, #6EF3D6, #0DCEDA);
+  background: #3d596d;
+  // background: -webkit-linear-gradient(to right, #6EF3D6, #0DCEDA);
+  // background: linear-gradient(to right, #6EF3D6, #0DCEDA);
   background-repeat: no-repeat;
   background-size: cover;
   background-position: 0 0;
@@ -275,7 +275,7 @@ interface LeftOverlayPanelProps {
   signingIn: boolean;
 }
 
-export const LeftOverlayPanel = styled(OverlayPanel)<LeftOverlayPanelProps>`
+export const LeftOverlayPanel = styled(OverlayPanel) <LeftOverlayPanelProps>`
   transform: translateX(-20%);
   ${(props) => (props.signingIn !== true ? `transform: translateX(0);` : null)}
 `;
@@ -284,7 +284,7 @@ interface RightOverlayPanelProps {
   signingIn: boolean;
 }
 
-export const RightOverlayPanel = styled(OverlayPanel)<RightOverlayPanelProps>`
+export const RightOverlayPanel = styled(OverlayPanel) <RightOverlayPanelProps>`
   right: 0;
   transform: translateX(0);
   ${(props) => (props.signingIn !== true ? `transform: translateX(20%);` : null)}

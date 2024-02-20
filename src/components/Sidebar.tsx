@@ -8,7 +8,7 @@ interface SidebarProps {
   isSidebarOpen: boolean;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({isSidebarOpen }) => {
+const Sidebar: React.FC<SidebarProps> = ({ isSidebarOpen }) => {
   const [shouldRenderContent, setShouldRenderContent] = useState(false);
 
   useEffect(() => {
@@ -42,16 +42,16 @@ const Sidebar: React.FC<SidebarProps> = ({isSidebarOpen }) => {
             <img className="logo w-full h-32 mt-[30%] " draggable={false} onContextMenu={(e) => e.preventDefault()} src={LogoImage} alt="logo" loading="lazy" />
             <span className="font-playfair text-[135%] font-bold italic">Tracking System</span>
           </div>
-          <ul className='mt-[25%] font-semibold font-merriweather text-xl space-y-3 md:space-y-5 lg:space-y-5 xl:space-y-5' style={{ fontFamily: 'Merriweather' }}> 
+          <ul className='mt-[25%] font-semibold font-merriweather text-xl space-y-3 md:space-y-5 lg:space-y-4 xl:space-y-4' style={{ fontFamily: 'Merriweather' }}>
             <li><Link to="/dashboard">Dashboard</Link></li>
-            <li><Link to="/add-cooler">Add Cooler</Link></li>
-            <li><Link to="/list-coolers">List Cooler</Link></li>
-            <li><Link to="/add-clinic">Add Clinic</Link></li>
-            <li><Link to="/list-clinics">List Clinic</Link></li>
-            <li><Link to="/cooler-out">Cooler OUT</Link></li>
-            <li><Link to="/list-coolerOUT">List Cooler OUT</Link></li>
-            <li><Link to="/cooler-in">Cooler IN</Link></li>
-            <li><Link to="/list-coolerIN">List Cooler IN</Link></li>
+            <li><Link to="/cooler-out">Send cooler</Link></li>
+            <li><Link to="/cooler-in">Receive cooler</Link></li>
+            <li><Link to="/add-cooler">Add cooler</Link></li>
+            <li><Link to="/add-clinic">Add clinic</Link></li>
+            <li><Link to="/list-coolers">Cooler list</Link></li>
+            <li><Link to="/list-clinics">Clinic list</Link></li>
+            <li><Link to="/list-coolerIN">All received coolers</Link></li>
+            <li><Link to="/list-coolerOUT">All sent coolers</Link></li>
             <li><Link to="/list-overview">Overview</Link></li>
             <li><Link to="/">Logout</Link></li>
           </ul>

@@ -52,19 +52,19 @@ const Dashboard: React.FC = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-        try {
-            const response = await axios.get(`${BASE_URL}/entries-counts-of-all-sheets`);
-            const data = response.data;
-            setCounts(data);
-            setIsLoading(false); // Set loading to false after data is fetched
-        } catch (error) {
-            console.error('Error fetching data:', error);
-            setIsLoading(false); // Set loading to false in case of an error
-        }
+      try {
+        const response = await axios.get(`${BASE_URL}/entries-counts-of-all-sheets`);
+        const data = response.data;
+        setCounts(data);
+        setIsLoading(false); // Set loading to false after data is fetched
+      } catch (error) {
+        console.error('Error fetching data:', error);
+        setIsLoading(false); // Set loading to false in case of an error
+      }
     };
 
     fetchData();
-}, []);
+  }, []);
 
 
   const formatDate = (date: Date): string => {
@@ -86,12 +86,12 @@ const Dashboard: React.FC = () => {
       {/* Sidebar */}
       <Sidebar toggleSidebar={toggleSidebar} isSidebarOpen={isSidebarOpen} />
       {(!isSidebarOpen || window.innerWidth >= 768) && (
-            <div className={`ml-4 ${isSidebarOpen ? 'ml-28 xl:ml-56 lg:ml-56 md:ml-56' : 'ml-8'} text-black text-3xl mt-[-4%] md:mt-[-1%] lg:mt-[-1%] xl:mt-[-1%]`} style={{ fontFamily: 'Lugrasimo, cursive' }}>
-              Dashboard
-            </div>
-          )}
+        <div className={`ml-4 ${isSidebarOpen ? 'ml-28 xl:ml-56 lg:ml-56 md:ml-56' : 'ml-8'} text-black text-3xl mt-[-4%] md:mt-[-1%] lg:mt-[-1%] xl:mt-[-1%]`} style={{ fontFamily: 'Lugrasimo, cursive' }}>
+          Dashboard
+        </div>
+      )}
       {/* Main content */}
-      <div className={`flex-1 p-10 ${isSidebarOpen ? ' lg:ml-48 xl:ml-48' : ''}`}>
+      <div className={`flex-1 p-10 ${isSidebarOpen ? ' lg:ml-48 xl:ml-48 ' : 'w-full'}`}>
         <div className="flex items-center justify-center fixed top-1.5 left-2 transform z-50">
           <Hamburger
             size={26}
@@ -102,7 +102,7 @@ const Dashboard: React.FC = () => {
             color="#19c4a6"
           />
 
-    
+
         </div>
 
         {isLoading && (
@@ -117,8 +117,8 @@ const Dashboard: React.FC = () => {
         {!isLoading && (
           <div>
             <div className={`flex  ${isSidebarOpen ? ' xl:space-x-28' : 'xl:space-x-56'} basis-10 relative top-0 xs:top-0 sm:top-0 md:top-3 lg:top-3 xl:top-3 transform flex-col md:flex-row left-[0%] lg:left-[1%] xl:left-[1%] space-y-4 md:space-y-2 lg:space-y-2 xl:space-y-2`}>
-              <CardWithCounter title="Cooler IN" initialValue={counts.in} />
-              <CardWithCounter title="Cooler OUT" initialValue={counts.out} />
+              <CardWithCounter title="Received Coolers" initialValue={counts.in} />
+              <CardWithCounter title="Sent Coolers" initialValue={counts.out} />
               <CardWithCounter title="Overview" initialValue={counts.overview} />
             </div>
 

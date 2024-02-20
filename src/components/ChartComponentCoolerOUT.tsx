@@ -30,7 +30,7 @@ const ChartComponentCoolerOUT: React.FC = () => {
   const chartRef = useRef<any>(null);
 
   useEffect(() => {
- 
+
     fetchData();
   }, []);
 
@@ -59,7 +59,7 @@ const ChartComponentCoolerOUT: React.FC = () => {
         labels: labels,
         datasets: [
           {
-            label: 'Count of Cooler OUT entries',
+            label: 'Count of Sent Coolers entries',
             data: counts,
             backgroundColor: 'rgba(254, 168, 47, 0.4)',
             borderColor: 'rgba(254, 168, 47, 1)',
@@ -106,18 +106,18 @@ const ChartComponentCoolerOUT: React.FC = () => {
     <div>
       {chartData && (
         <>
-        <div  className='w-72 h-80 xl:w-96 xl:h-96 lg:w-96 xl:h-96'>
-          <Bar
-            data={chartData as any} // chartData is now ensured to be non-null
-            options={{
-              maintainAspectRatio: false,
-              responsive: true,
-            }}
-            ref={(ref) => (chartRef.current = ref)}
-          />
-        </div>
-        <div className="text-center font-semibold	 text-black font-serif mt-2 mb-6 sm:mb-6 xs:mb-6 md:mb-0 lg:mb-0 xl:mb-0">Cooler OUT</div>
-          </>
+          <div className='w-72 h-80 xl:w-96 xl:h-96 lg:w-96 xl:h-96'>
+            <Bar
+              data={chartData as any} // chartData is now ensured to be non-null
+              options={{
+                maintainAspectRatio: false,
+                responsive: true,
+              }}
+              ref={(ref) => (chartRef.current = ref)}
+            />
+          </div>
+          <div className="text-center font-semibold	 text-black font-serif mt-2 mb-6 sm:mb-6 xs:mb-6 md:mb-0 lg:mb-0 xl:mb-0">Sent Coolers</div>
+        </>
       )}
     </div>
   );

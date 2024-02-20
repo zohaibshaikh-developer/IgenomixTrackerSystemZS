@@ -47,7 +47,7 @@ const ChartComponentCoolerIN: React.FC = () => {
     const counts = labels.map((date) => data[date] || 0);
     return counts;
   };
-  
+
   const fetchData = async () => {
     try {
       const response = await fetch(`${BASE_URL}/entry-count-ByDate-CoolerIN`);
@@ -73,7 +73,7 @@ const ChartComponentCoolerIN: React.FC = () => {
         labels: labels,
         datasets: [
           {
-            label: 'Count of Cooler IN entries',
+            label: 'Count of Coolers Received entries',
             data: counts,
             backgroundColor: 'rgba(254, 168, 47, 0.4)',
             borderColor: 'rgba(254, 168, 47, 1)',
@@ -126,7 +126,7 @@ const ChartComponentCoolerIN: React.FC = () => {
               }}
             />
           </div>
-          <div className="text-center font-semibold text-black font-serif mt-2 mb-6 sm:mb-6 xs:mb-6 md:mb-0 lg:mb-0 xl:mb-0">Cooler IN</div>
+          <div className="text-center font-semibold text-black font-serif mt-2 mb-6 sm:mb-6 xs:mb-6 md:mb-0 lg:mb-0 xl:mb-0">Received Coolers</div>
         </>
       )}
     </div>

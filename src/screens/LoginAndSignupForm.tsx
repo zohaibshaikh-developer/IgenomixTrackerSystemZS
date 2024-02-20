@@ -1,5 +1,5 @@
 // LoginAndSignupForm.tsx
-import { useState,useEffect, SetStateAction} from 'react';
+import { useState, useEffect, SetStateAction } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import * as Components from "../components/LoginAndSignup";
@@ -21,10 +21,12 @@ const LoginAndSignupForm: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [registrationSuccess, setRegistrationSuccess] = useState(false);
 
+  const [loading, setLoading] = useState(false); // State to track loading status
 
-  
+
   const handleSignIn = async (event: { preventDefault: () => void; }) => {
     event.preventDefault();
+    setLoading(true); // Set loading to true when sign-in process starts
 
     try {
       const response = await fetch(`${BASE_URL}/loginUser`, {
@@ -49,12 +51,16 @@ const LoginAndSignupForm: React.FC = () => {
       console.error('Error during sign-in:', error);
       setErrorMessage('An error occurred during sign-in. Please try again.'); // Set a generic error message
     }
+    finally {
+      setLoading(false); // Reset loading status once sign-in process completes
+    }
+
   };
 
 
   const handleSignUp = async (event: { preventDefault: () => void; }) => {
     event.preventDefault();
-
+    setLoading(true);
     try {
       const response = await fetch(`${BASE_URL}/registerUser`, {
         method: 'POST',
@@ -84,6 +90,9 @@ const LoginAndSignupForm: React.FC = () => {
     } catch (error) {
       console.error('Error during sign-up:', error);
       setErrorMessage('An error occurred during sign-up. Please try again.'); // Set a generic error message
+    }
+    finally {
+      setLoading(false);
     }
   };
 
@@ -141,18 +150,21 @@ const LoginAndSignupForm: React.FC = () => {
               onChange={(e: { target: { value: SetStateAction<string>; }; }) => setPassword(e.target.value)}
             />
             <span
-            style={{ cursor: 'pointer' ,color:'black', alignSelf: 'flex-end' , backgroundColor: '#6EF3D6', padding: '0.6%', fontWeight: 'bold' , borderRadius: '6%', fontSize: '85%'}}
-            onClick={() => setShowPassword(!showPassword)}
+              style={{ cursor: 'pointer', color: 'black', alignSelf: 'flex-end', backgroundColor: '#6EF3D6', padding: '0.6%', fontWeight: 'bold', borderRadius: '6%', fontSize: '85%' }}
+              onClick={() => setShowPassword(!showPassword)}
             >
               {showPassword ? 'Hide' : 'Show'} Password
             </span>
             {errorMessage && (
-            <span style={{ color: 'red', margin: '10px 0', display: 'block' }}>
-              {errorMessage}
-            </span>
-          )}
-            <Components.Button onClick={handleSignUp}>Sign Up</Components.Button>
-          </Components.Form>
+              <span style={{ color: 'red', margin: '10px 0', display: 'block' }}>
+                {errorMessage}
+              </span>
+            )}
+            <Components.Button onClick={handleSignUp} disabled={loading}>
+              {loading ? <div className="inset-0 flex items-center justify-center">
+                <div className="animate-spin rounded-full h-6 w-6 border-t-2 border-b-2 border-white"></div>
+              </div> : 'Sign Up'}
+            </Components.Button>          </Components.Form>
         </Components.SignUpContainer>
         <Components.SignInContainer signingIn={signIn}>
           <Components.Form>
@@ -160,10 +172,10 @@ const LoginAndSignupForm: React.FC = () => {
             {/* {flashMessage && <SuccessFlashMessage message={flashMessage} onClose={closeFlashMessage} />} */}
 
             {registrationSuccess && (
-            <span style={{ color: 'green', margin: '10px 0', display: 'block', fontSize: '18px' }}>
-              Registration successful! Please sign in.
-            </span>
-          )}
+              <span style={{ color: 'green', margin: '10px 0', display: 'block', fontSize: '18px' }}>
+                Registration successful! Please sign in.
+              </span>
+            )}
             <Components.Input
               type="text"
               name="Username"
@@ -172,24 +184,28 @@ const LoginAndSignupForm: React.FC = () => {
               onChange={(e: { target: { value: SetStateAction<string>; }; }) => setUsername(e.target.value)}
             />
             <Components.Input
-            type={showPassword ? "text" : "password"}
-            name="Password"
-            placeholder="Password"
-            value={password}
-            onChange={(e: { target: { value: SetStateAction<string>; }; }) => setPassword(e.target.value)}
-          />
-          <span
-            style={{ cursor: 'pointer' ,color:'black', alignSelf: 'flex-end' , backgroundColor: '#6EF3D6', padding: '0.6%', fontWeight: 'bold' , borderRadius: '6%', fontSize: '85%'}}
-            onClick={() => setShowPassword(!showPassword)}
-          >
-            {showPassword ? 'Hide' : 'Show'} Password
-          </span>
-          {errorMessage && (
-            <span style={{ color: 'red', margin: '10px 0', display: 'block' }}>
-              {errorMessage}
+              type={showPassword ? "text" : "password"}
+              name="Password"
+              placeholder="Password"
+              value={password}
+              onChange={(e: { target: { value: SetStateAction<string>; }; }) => setPassword(e.target.value)}
+            />
+            <span
+              style={{ cursor: 'pointer', color: 'black', alignSelf: 'flex-end', backgroundColor: '#6EF3D6', padding: '0.6%', fontWeight: 'bold', borderRadius: '6%', fontSize: '85%' }}
+              onClick={() => setShowPassword(!showPassword)}
+            >
+              {showPassword ? 'Hide' : 'Show'} Password
             </span>
-          )}
-            <Components.Button onClick={handleSignIn}>Sign In</Components.Button>
+            {errorMessage && (
+              <span style={{ color: 'red', margin: '10px 0', display: 'block' }}>
+                {errorMessage}
+              </span>
+            )}
+            <Components.Button onClick={handleSignIn} disabled={loading}>
+              {loading ? <div className="inset-0 flex items-center justify-center">
+                <div className="animate-spin rounded-full h-6 w-6 border-t-2 border-b-2 border-white"></div>
+              </div> : 'Sign In'}
+            </Components.Button>
           </Components.Form>
         </Components.SignInContainer>
         <Components.OverlayContainer signingIn={signIn}>

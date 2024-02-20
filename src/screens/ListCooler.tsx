@@ -121,38 +121,38 @@ const DeleteConfirmationModal: React.FC<{
     onDelete: (coolerId: number) => void;
     coolerId: number;
     coolerName: string;
-  }> = ({ isOpen, onClose, onDelete, coolerId, coolerName }) => {
+}> = ({ isOpen, onClose, onDelete, coolerId, coolerName }) => {
     const handleDelete = () => {
-      onDelete(coolerId);
-      onClose();
+        onDelete(coolerId);
+        onClose();
     };
 
-    
+
     return (
-      <div className={`fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 ${isOpen ? 'block' : 'hidden'}`}>
-        <div className="p-6 rounded-xl shadow-md w-96" style={{ background: 'linear-gradient(135deg, #ff5252, #ff7675)' }}>
-        
-          <h2 className="text-2xl font-semibold mb-4 text-white">Delete Cooler</h2>
-          <p className="text-white">Are you sure you want to delete Cooler : <br></br> <br></br> Cooler ID:  {coolerId} <br></br>Cooler Name :  {coolerName}</p>
-          <div className="flex items-center justify-center mt-8">
-            <button
-              className="btn-hoverFormSubmit color-1 mr-2"
-              onClick={handleDelete}
-            >
-              Yes
-            </button>
-            <button
-              className="btn-hoverFormSubmit color-2"
-              onClick={onClose}
-            >
-              No
-            </button>
-          </div>
+        <div className={`fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 ${isOpen ? 'block' : 'hidden'}`}>
+            <div className="p-6 rounded-xl shadow-md w-96" style={{ background: 'linear-gradient(135deg, #ff5252, #ff7675)' }}>
+
+                <h2 className="text-2xl font-semibold mb-4 text-white">Delete Cooler</h2>
+                <p className="text-white">Are you sure you want to delete Cooler : <br></br> <br></br> Cooler ID:  {coolerId} <br></br>Cooler Name :  {coolerName}</p>
+                <div className="flex items-center justify-center mt-8">
+                    <button
+                        className="btn-hoverFormSubmit color-1 mr-2"
+                        onClick={handleDelete}
+                    >
+                        Yes
+                    </button>
+                    <button
+                        className="btn-hoverFormSubmit color-2"
+                        onClick={onClose}
+                    >
+                        No
+                    </button>
+                </div>
+            </div>
         </div>
-      </div>
     );
-  };
-  
+};
+
 
 
 
@@ -286,7 +286,7 @@ const ListCooler: React.FC = () => {
     }
 
     const handleDelete = (coolerId: any, coolerName: any) => {
-        
+
         setSelectedDeleteCooler((prevCooler) => ({ ...prevCooler, coolerId, coolerName }));
         setDeleteModalOpen(true);
 
@@ -321,13 +321,13 @@ const ListCooler: React.FC = () => {
             {(!isSidebarOpen || window.innerWidth >= 768) && !isLoading && (
                 // <div className='flex items-center justify-center fixed top-4 left-8 transform z-50'>
                 <div className={`ml-4 ${isSidebarOpen ? 'ml-28 xl:ml-56 lg:ml-56 md:ml-56' : 'ml-9'} relative text-black text-start text-3xl mt-[-4%] md:mt-[-1%] lg:mt-[-1%] xl:mt-[-1%]`} style={{ fontFamily: 'Lugrasimo, cursive' }}>
-                    List Coolers
+                    List Of Coolers
                 </div>
                 // </div>
             )}
             {alert.visible && <Alert message={alert.message} onClose={function (): void {
                 throw new Error('Function not implemented.');
-            } } />}
+            }} />}
 
             {isLoading && (
                 <div className="loader-container">
@@ -427,7 +427,7 @@ const ListCooler: React.FC = () => {
                                                         <button
                                                             className="mr-2 bg-transparent border-none p-2"
                                                             onClick={() => {
-                                                                handleDelete(cooler.coolerID,cooler.coolerName);
+                                                                handleDelete(cooler.coolerID, cooler.coolerName);
                                                                 setFocusElement(document.body); // Set focus to body after button click
                                                             }}
 

@@ -39,6 +39,7 @@ const CoolerIN: React.FC = () => {
     const [selectedCooler, setSelectedCooler] = useState('');
     const [quantity, setQuantity] = useState('');
 
+    const [isLoading, setIsLoading] = useState(true);
 
 
 
@@ -49,20 +50,31 @@ const CoolerIN: React.FC = () => {
     }, []);
 
     const ListClinicData = async () => {
+        setIsLoading(true);
         try {
             const response = await axios.get(`${BASE_URL}/list-Overviews_Where_Status_is_InTransit`);
             setOverviewList(response.data.data);
+            setIsLoading(false);
+
         } catch (error) {
             console.error('Error fetching overview list:', error);
+            setIsLoading(false);
+
         }
     };
 
     const ListCoolerData = async () => {
+        setIsLoading(true);
+
         try {
             const response = await axios.get(`${BASE_URL}/list-coolers`);
             setCoolerList(response.data.data);
+            setIsLoading(false);
+
         } catch (error) {
             console.error('Error fetching cooler list:', error);
+            setIsLoading(false);
+
         }
     };
 
@@ -118,10 +130,10 @@ const CoolerIN: React.FC = () => {
 
             if (response.status === 200) {
                 // Success: Redirect to list-coolersOUT page with success message
-                navigate('/list-coolerIN', { state: { message: response.data.message || 'Cooler IN Data Inserted Successfully' } });
+                navigate('/list-coolerIN', { state: { message: response.data.message || 'Received Cooler Data Inserted Successfully' } });
             } else {
                 // Handle other status codes
-                throw new Error(response.data.message || 'Failed to insert Cooler IN data');
+                throw new Error(response.data.message || 'Failed to insert Received Cooler data');
             }
 
         } catch (error: any) {
@@ -138,148 +150,159 @@ const CoolerIN: React.FC = () => {
 
 
     return (
-        <div className="flex items-start justify-start h-screen">
-            <Sidebar toggleSidebar={toggleSidebar} isSidebarOpen={isSidebarOpen} />
-
-            <div className={`flex-1 p-10 ${isSidebarOpen ? 'lg:ml-44 xl:ml-44' : ''}`}>
-                <div className="flex items-center justify-center fixed top-1.5 left-2 transform z-50">
-                    <Hamburger
-                        size={26}
-                        toggled={isSidebarOpen}
-                        toggle={toggleSidebar}
-                        distance="lg"
-                        duration={0.7}
-                        color="#19c4a6"
-                    />
-
-                    {(!isSidebarOpen || window.innerWidth >= 768) && (
-                        <div
-                            className={`ml-4 ${isSidebarOpen ? 'ml-28 xl:ml-52 lg:ml-52 md:ml-52' : 'ml-2'
-                                } text-black text-3xl mt-2`}
-                            style={{ fontFamily: 'Lugrasimo, cursive' }}
-                        >
-                            Cooler IN
-                        </div>
-                    )}
+        <>
+            {isLoading && (
+                <div className="loader-container">
+                    <div className="loader"></div>
+                    <p className="loading-text">Loading</p>
                 </div>
+            )}
 
-                <div className="flex flex-col items-center justify-center h-screen mt-[-5%]">
-                    <div className="wrapper bg-white shadow-lg p-0 rounded-lg">
-                        <div
-                            className="wrapper relative bg-cyan-400 shadow-lg p-10 rounded-lg"
-                            style={{
-                                backgroundImage: `url(${backgroundImg})`,
-                                backgroundSize: 'cover',
-                                backgroundRepeat: 'no-repeat',
-                            }}
-                        >
-                            <div className="overlay absolute inset-0 bg-black opacity-50 rounded-lg"></div>
-                            <div className="p-5 text-white z-10 relative">
-                                <h1>Cooler IN</h1>
-                                <p className='mt-2'>Fill in the details below to add a new Cooler IN entry.</p>
-                            </div>
+            {!isLoading && (
+                <div className="flex items-start justify-start h-screen">
+                    <Sidebar toggleSidebar={toggleSidebar} isSidebarOpen={isSidebarOpen} />
+
+                    <div className={`flex-1 p-10 ${isSidebarOpen ? 'lg:ml-44 xl:ml-44' : ''}`}>
+                        <div className="flex items-center justify-center fixed top-1.5 left-2 transform z-50">
+                            <Hamburger
+                                size={26}
+                                toggled={isSidebarOpen}
+                                toggle={toggleSidebar}
+                                distance="lg"
+                                duration={0.7}
+                                color="#19c4a6"
+                            />
+
+                            {(!isSidebarOpen || window.innerWidth >= 768) && (
+                                <div
+                                    className={`ml-4 ${isSidebarOpen ? 'ml-28 xl:ml-52 lg:ml-52 md:ml-52' : 'ml-2'
+                                        } text-black text-3xl mt-2`}
+                                    style={{ fontFamily: 'Lugrasimo, cursive' }}
+                                >
+                                    Receive Cooler
+                                </div>
+                            )}
                         </div>
 
-                        <form className="p-6 space-y-9 min-w-full text-left">
-
-
-
-                            {/* overview Name Dropdown */}
-                            {/* overview Name Dropdown */}
-                            <div className="mb-4 relative min-w-full">
-                                <label className='text-black font-semibold block text-md mb-3'>Entry to update in Overview whose status is In Transit</label>
-                                <select
-                                    className="w-full p-1.5 input-style"
-                                    value={selectedOverview}
-                                    onChange={(e) => {
-                                        setSelectedOverview(e.target.value);
+                        <div className="flex flex-col items-center justify-center h-screen mt-[-5%]">
+                            <div className="wrapper bg-white shadow-lg p-0 rounded-lg">
+                                <div
+                                    className="wrapper relative bg-cyan-400 shadow-lg p-10 rounded-lg"
+                                    style={{
+                                        backgroundImage: `url(${backgroundImg})`,
+                                        backgroundSize: 'cover',
+                                        backgroundRepeat: 'no-repeat',
                                     }}
-                                    required
                                 >
-                                    <option value="" disabled>Select the overview entry</option>
-                                    {overviewList.map(overview => (
-                                        <option key={overview.rowId} value={overview.Sr_No}>
-                                            {`Date Sent : ${overview.DateSent} - Cooler ID: ${overview.coolerID} - Clinic Name: ${overview.clinicName} - Status: ${overview.status}`}
-                                        </option>
-                                    ))}
-                                </select>
+                                    <div className="overlay absolute inset-0 bg-black opacity-50 rounded-lg"></div>
+                                    <div className="p-5 text-white z-10 relative">
+                                        <h1>Receive Cooler</h1>
+                                        <p className='mt-2'>Fill in the details below to add a new Receive Cooler entry.</p>
+                                    </div>
+                                </div>
+
+                                <form className="p-6 space-y-9 min-w-full text-left">
+
+
+
+                                    {/* overview Name Dropdown */}
+                                    {/* overview Name Dropdown */}
+                                    <div className="mb-4 relative min-w-full">
+                                        <label className='text-black font-semibold block text-md mb-3'>Entry to update in Overview whose status is In Transit</label>
+                                        <select
+                                            className="w-full p-1.5 input-style"
+                                            value={selectedOverview}
+                                            onChange={(e) => {
+                                                setSelectedOverview(e.target.value);
+                                            }}
+                                            required
+                                        >
+                                            <option value="" disabled>Select the overview entry</option>
+                                            {overviewList.map(overview => (
+                                                <option key={overview.rowId} value={overview.Sr_No}>
+                                                    {`Date Sent : ${overview.DateSent} - Cooler ID: ${overview.coolerID} - Clinic Name: ${overview.clinicName} - Status: ${overview.status}`}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </div>
+
+
+                                    {/* Cooler ID Dropdown */}
+                                    <div className="mb-4 relative min-w-full">
+                                        <label className='text-black font-semibold block text-md mb-3'>Cooler ID</label>
+                                        <select
+                                            className="w-full p-1.5 input-style"
+                                            value={selectedCooler}
+                                            onChange={(e) => setSelectedCooler(e.target.value)}
+                                            required
+                                        >
+                                            <option value="" disabled>Select Cooler ID</option>
+                                            {coolerList.map(cooler => (
+                                                <option key={cooler.rowId} value={cooler.coolerID}>{cooler.coolerID}</option>
+                                            ))}
+                                        </select>
+                                    </div>
+
+
+                                    <div className="mb-4 relative min-w-full">
+                                        <label className='text-black font-semibold block text-md mb-3'>Quantity</label>
+                                        <input
+                                            type="number"
+                                            className="w-full p-1.5 input-style"
+                                            value={quantity}
+                                            onChange={(e) => setQuantity(e.target.value)}
+                                            placeholder="Enter Quantity"
+                                            required
+                                            style={{ '::placeholder': { color: 'white' } } as CSSProperties}
+                                        />
+                                    </div>
+
+                                    <div className="mb-4 relative min-w-full">
+                                        <label className='text-black font-semibold block text-md mb-3'>Date Received</label>
+                                        <DatePicker
+                                            selected={dateReceived}
+                                            onChange={(date) => setDateReceived(date || new Date())}
+                                            dateFormat="dd/MM/yyyy"
+                                            className="w-full p-1.5 input-style"
+                                            placeholderText="Select Date"
+                                            required
+                                        />
+                                    </div>
+
+                                    <div className="flex items-center justify-center mt-8">
+                                        <button
+                                            className={`btn-hoverFormSubmit color-1 relative ${submitting ? 'cursor-not-allowed opacity-75' : ''}`}
+                                            type="button"
+                                            onClick={handleSubmit}
+                                            disabled={submitting}
+                                        >
+                                            {submitting ? (
+                                                <div className="absolute inset-0 flex items-center justify-center ">
+                                                    <svg
+                                                        className="animate-spin h-5 w-5 border-t-5 border-blue-200 rounded-full"
+                                                        xmlns="http://www.w3.org/2000/svg"
+                                                        fill="none"
+                                                        viewBox="0 0 24 24"
+                                                        stroke="currentColor"
+                                                    >
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 6a2 2 0 100-4 2 2 0 000 4zM4 6a2 2 0 100-4 2 2 0 000 4zM20 12a2 2 0 100-4 2 2 0 000 4zM4 12a2 2 0 100-4 2 2 0 000 4zM18 18a2 2 0 100-4 2 2 0 000 4zM6 18a2 2 0 100-4 2 2 0 000 4zM20 18a2 2 0 100-4 2 2 0 000 4zM12 20a8 8 0 100-16 8 8 0 000 16z" />
+                                                    </svg>
+                                                </div>
+                                            ) : (
+                                                'Submit'
+                                            )}
+                                        </button>
+                                    </div>
+
+
+                                    {errorMessage && <div className="mt-2 text-red-500">{errorMessage}</div>}
+                                </form>
                             </div>
-
-
-                            {/* Cooler ID Dropdown */}
-                            <div className="mb-4 relative min-w-full">
-                                <label className='text-black font-semibold block text-md mb-3'>Cooler ID</label>
-                                <select
-                                    className="w-full p-1.5 input-style"
-                                    value={selectedCooler}
-                                    onChange={(e) => setSelectedCooler(e.target.value)}
-                                    required
-                                >
-                                    <option value="" disabled>Select Cooler ID</option>
-                                    {coolerList.map(cooler => (
-                                        <option key={cooler.rowId} value={cooler.coolerID}>{cooler.coolerID}</option>
-                                    ))}
-                                </select>
-                            </div>
-
-
-                            <div className="mb-4 relative min-w-full">
-                                <label className='text-black font-semibold block text-md mb-3'>Quantity</label>
-                                <input
-                                    type="number"
-                                    className="w-full p-1.5 input-style"
-                                    value={quantity}
-                                    onChange={(e) => setQuantity(e.target.value)}
-                                    placeholder="Enter Quantity"
-                                    required
-                                    style={{ '::placeholder': { color: 'white' } } as CSSProperties}
-                                />
-                            </div>
-
-                            <div className="mb-4 relative min-w-full">
-                                <label className='text-black font-semibold block text-md mb-3'>Date Received</label>
-                                <DatePicker
-                                    selected={dateReceived}
-                                    onChange={(date) => setDateReceived(date || new Date())}
-                                    dateFormat="dd/MM/yyyy"
-                                    className="w-full p-1.5 input-style"
-                                    placeholderText="Select Date"
-                                    required
-                                />
-                            </div>
-
-                            <div className="flex items-center justify-center mt-8">
-                                <button
-                                    className={`btn-hoverFormSubmit color-1 relative ${submitting ? 'cursor-not-allowed opacity-75' : ''}`}
-                                    type="button"
-                                    onClick={handleSubmit}
-                                    disabled={submitting}
-                                >
-                                    {submitting ? (
-                                        <div className="absolute inset-0 flex items-center justify-center ">
-                                            <svg
-                                                className="animate-spin h-5 w-5 border-t-5 border-blue-200 rounded-full"
-                                                xmlns="http://www.w3.org/2000/svg"
-                                                fill="none"
-                                                viewBox="0 0 24 24"
-                                                stroke="currentColor"
-                                            >
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 6a2 2 0 100-4 2 2 0 000 4zM4 6a2 2 0 100-4 2 2 0 000 4zM20 12a2 2 0 100-4 2 2 0 000 4zM4 12a2 2 0 100-4 2 2 0 000 4zM18 18a2 2 0 100-4 2 2 0 000 4zM6 18a2 2 0 100-4 2 2 0 000 4zM20 18a2 2 0 100-4 2 2 0 000 4zM12 20a8 8 0 100-16 8 8 0 000 16z" />
-                                            </svg>
-                                        </div>
-                                    ) : (
-                                        'Submit'
-                                    )}
-                                </button>
-                            </div>
-
-
-                            {errorMessage && <div className="mt-2 text-red-500">{errorMessage}</div>}
-                        </form>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </div>
+            )}
+        </>
     );
 };
 

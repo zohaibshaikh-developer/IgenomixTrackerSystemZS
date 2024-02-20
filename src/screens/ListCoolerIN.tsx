@@ -26,13 +26,13 @@ const UpdateModal: React.FC<{
     coolerINName: string;
     coolerID: string;
     onUpdate: (
-      SrNo: number,
-      DateSent: string,
-      coolerINName: string,
-      coolerID: string,
-      newSrNo: any
+        SrNo: number,
+        DateSent: string,
+        coolerINName: string,
+        coolerID: string,
+        newSrNo: any
     ) => Promise<any>;
-  }> = ({ isOpen, onClose, SrNo, onUpdate }) => {
+}> = ({ isOpen, onClose, SrNo, onUpdate }) => {
 
     const [editableSrNo, setEditableSrNo] = useState(SrNo);
     const [newDateSent, setNewDateSent] = useState(new Date());
@@ -70,19 +70,19 @@ const UpdateModal: React.FC<{
 
     const handleSubmit = () => {
         setSubmitting(true);
-      
+
         onUpdate(editableSrNo, newDateSent.toISOString(), selectedcoolerIN, selectedCooler, newSrNo)
 
-          .then((_response: any) => {
-            setSubmitting(false);
-            onClose();
-          })
-          .catch((error: any) => {
-            console.error('Error updating coolerIN:', error);
-            setSubmitting(false);
-          });
-      };
-      
+            .then((_response: any) => {
+                setSubmitting(false);
+                onClose();
+            })
+            .catch((error: any) => {
+                console.error('Error updating coolerIN:', error);
+                setSubmitting(false);
+            });
+    };
+
 
     const handleDateChange = (date: Date | null) => {
         // If date is null, set a default date or handle it as needed
@@ -209,9 +209,9 @@ const DeleteConfirmationModal: React.FC<{
     return (
         <div className={`fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 ${isOpen ? 'block' : 'hidden'}`}>
             <div className="p-6 rounded-xl shadow-md w-96" style={{ background: 'linear-gradient(135deg, #ff5252, #ff7675)' }}>
-                <h2 className="text-2xl font-semibold mb-4 text-white">Delete Cooler IN</h2>
+                <h2 className="text-2xl font-semibold mb-4 text-white">Delete Received Cooler</h2>
                 <p className="text-white">
-                    Are you sure you want to delete Cooler IN : <br></br> <br></br>
+                    Are you sure you want to delete Received Cooler : <br></br> <br></br>
                     Sr_No : {SrNo} <br></br>
                     Cooler ID : {coolerID}<br></br>
                     Date Received: {DateReceived}<br></br>
@@ -253,7 +253,7 @@ const ListCoolerIN: React.FC = () => {
         DateReceived: '', // Add DateReceived field
         Quantity: 0, // Add Quantity field
         coolerID: '', // Add coolerID field
-      });
+    });
 
 
     const toggleSidebar = () => {
@@ -283,7 +283,7 @@ const ListCoolerIN: React.FC = () => {
             });
 
             if (response.data.status === 200) {
-                setAlert({ message: `cooler IN with Sr.No ${SrNo} updated successfully.`, visible: true });
+                setAlert({ message: `Received Cooler with Sr.No ${SrNo} updated successfully.`, visible: true });
 
                 // Set a timeout to clear the alert after 4000 milliseconds (4 seconds)
                 setTimeout(() => {
@@ -294,13 +294,13 @@ const ListCoolerIN: React.FC = () => {
                 fetchDataListcoolerIN();
             } else {
                 // Handle error case if needed
-                console.error('Error updating cooler IN:', response.data.message);
+                console.error('Error updating Received Cooler:', response.data.message);
             }
 
             return response; // Return the response for additional handling if needed
         } catch (error) {
             // Handle network or other errors
-            console.error('Error updating cooler IN:', error);
+            console.error('Error updating Received Cooler:', error);
             throw error; // Re-throw the error for the modal to handle
         }
     };
@@ -381,7 +381,7 @@ const ListCoolerIN: React.FC = () => {
         try {
             const response = await axios.delete(`${BASE_URL}/delete-coolerINBySr_No/${SrNo}`);
             if (response.data.status === 200) {
-                setAlert({ message: `Cooler IN with Sr.No ${SrNo} deleted successfully.`, visible: true });
+                setAlert({ message: `Received Cooler with Sr.No ${SrNo} deleted successfully.`, visible: true });
                 setTimeout(() => {
                     setAlert({ message: '', visible: false });
                 }, 5000);
@@ -402,7 +402,7 @@ const ListCoolerIN: React.FC = () => {
             {(!isSidebarOpen || window.innerWidth >= 768) && !isLoading && (
                 // <div className='flex items-center justify-center fixed top-4 left-8 transform z-50'>
                 <div className={`ml-4 ${isSidebarOpen ? 'ml-28 xl:ml-56 lg:ml-56 md:ml-56' : 'ml-9'} relative text-black text-start text-3xl mt-[-4%] md:mt-[-1%] lg:mt-[-1%] xl:mt-[-1%]`} style={{ fontFamily: 'Lugrasimo, cursive' }}>
-                    List Coolers IN
+                    List Of Received Coolers
                 </div>
                 // </div>
             )}
