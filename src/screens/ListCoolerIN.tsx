@@ -52,8 +52,12 @@ const UpdateModal: React.FC<{
 
     const ListcoolerINData = async () => {
         try {
-            const response = await axios.get(`${BASE_URL}/list-coolersIN`);
-            setCoolerINList(response.data.data);
+            const response = await axios.get(`${BASE_URL}/list-coolerIN`);
+            if (response.data && Array.isArray(response.data)) {
+                setCoolerINList(response.data);
+            } else {
+                console.error('Invalid data received for coolerIN list:', response.data);
+            }
         } catch (error) {
             console.error('Error fetching coolerIN list:', error);
         }
@@ -62,7 +66,11 @@ const UpdateModal: React.FC<{
     const ListCoolerData = async () => {
         try {
             const responseCoolers = await axios.get(`${BASE_URL}/list-coolers`);
-            setCoolerList(responseCoolers.data.data);
+            if (responseCoolers.data && Array.isArray(responseCoolers.data)) {
+                setCoolerList(responseCoolers.data);
+            } else {
+                console.error('Invalid data received for cooler list:', responseCoolers.data);
+            }
         } catch (error) {
             console.error('Error fetching cooler list:', error);
         }
@@ -308,9 +316,10 @@ const ListCoolerIN: React.FC = () => {
 
     useEffect(() => {
         setFilteredcoolersIN(
-            coolersIN.filter((coolerIN) => coolerIN.coolerID.includes(filterText))
+            coolersIN.filter((coolerIN) => coolerIN.coolerID && coolerIN.coolerID.includes(filterText))
         );
     }, [coolersIN, filterText]);
+
 
 
     useEffect(() => {

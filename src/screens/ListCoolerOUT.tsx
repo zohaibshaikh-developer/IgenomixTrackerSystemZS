@@ -295,7 +295,7 @@ const ListCoolerOUT: React.FC = () => {
 
     useEffect(() => {
         setFilteredclinics(
-            clinics.filter((clinic) => clinic.clinicName.toLowerCase().includes(filterText.toLowerCase()))
+            clinics.filter((clinic) => clinic && clinic.clinicName && clinic.clinicName.toLowerCase().includes(filterText.toLowerCase()))
         );
     }, [clinics, filterText]);
 
@@ -351,7 +351,15 @@ const ListCoolerOUT: React.FC = () => {
                 setclinics([]);
                 setIsLoading(false);
             });
-    }
+    };
+
+
+    useEffect(() => {
+        setFilteredclinics(
+            clinics.filter((clinic) => clinic && clinic.clinicName && clinic.clinicName.toLowerCase().includes(filterText.toLowerCase()))
+        );
+    }, [clinics, filterText]);
+
 
     const handleDelete = (SrNo: any, DateSent: any, clinicName: any, CoolerID: any) => {
 

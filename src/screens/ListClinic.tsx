@@ -227,9 +227,10 @@ const Listclinic: React.FC = () => {
 
     useEffect(() => {
         setFilteredclinics(
-            clinics.filter((clinic) => clinic.clinicName.toLowerCase().includes(filterText.toLowerCase()))
+            clinics.filter((clinic) => clinic.clinicName && clinic.clinicName.toLowerCase().includes(filterText.toLowerCase()))
         );
     }, [clinics, filterText]);
+
 
 
     useEffect(() => {
