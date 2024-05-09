@@ -15,7 +15,7 @@ const AddCooler: React.FC = () => {
     const [errorMessage, setErrorMessage] = useState('');
 
     const [coolerId, setCoolerId] = useState('');
-    const [coolerName, setCoolerName] = useState('');
+    const [coolerName, setCoolerName] = useState('IGENOMIX');
 
     const [coolerIdValid, setCoolerIdValid] = useState(true);
     const [coolerNameValid, setCoolerNameValid] = useState(true);
@@ -52,27 +52,27 @@ const AddCooler: React.FC = () => {
         } else {
             setCoolerIdValid(true);
         }
-    
+
         if (!coolerName.trim()) {
             setCoolerNameValid(false);
             return;
         } else {
             setCoolerNameValid(true);
         }
-    
+
         const coolerIdNumber = parseInt(coolerId, 10);
-    
+
         setSubmitting(true);
         setErrorMessage('');
-    
+
         try {
             const response = await axios.post(`${BASE_URL}/add-cooler`, {
                 coolerID: coolerIdNumber,
                 coolerName: coolerName,
             });
-    
+
             const responseData = response.data;
-    
+
             if (response.status !== 200) {
                 if (response.status === 401) {
                     throw new Error(responseData.message || 'Cooler ID already exists. Use another ID.');
@@ -81,16 +81,22 @@ const AddCooler: React.FC = () => {
                     throw new Error(responseData.message || 'Failed to add cooler');
                 }
             }
-    
+
             navigate('/list-coolers', { state: { message: responseData.message || 'Cooler added successfully' } });
-        } catch (error : any) {
+        } catch (error: any) {
             console.error('Error adding cooler:', error);
             setErrorMessage((error.response?.data?.message || 'Failed to add cooler. Please try again.'));
         } finally {
             setSubmitting(false);
         }
     };
-    
+
+    const handleChange = (e: { target: { value: string; }; }) => {
+        const input = e.target.value.trim();
+        setCoolerName(input);
+        setCoolerNameValid(input !== ''); // Validate only if input is not empty
+    };
+
 
     return (
         <div className="flex items-start justify-start h-screen">
@@ -152,7 +158,6 @@ const AddCooler: React.FC = () => {
                                 />
                                 {!coolerIdValid && <p className="text-red-500 text-sm mt-1">Cooler ID is required</p>}
                             </div>
-
                             <div className="mb-4 relative min-w-full">
                                 <label className='text-black font-semibold block text-md mb-3'>Cooler Name</label>
                                 <input
@@ -160,15 +165,15 @@ const AddCooler: React.FC = () => {
                                     id="coolername"
                                     type="text"
                                     placeholder="Cooler Name"
-                                    value={coolerName}
-                                    onChange={(e) => {
-                                        setCoolerName(e.target.value);
-                                        setCoolerNameValid(!!e.target.value.trim());
-                                    }}
-                                    required
+                                    value={coolerName || 'IGENOMIX'} // Default value set to 'Igenomix'
+                                    onChange={handleChange}
+
+                                    required={!coolerNameValid} // Set required attribute conditionally
+                                    disabled // Disable the input field
                                 />
                                 {!coolerNameValid && <p className="text-red-500 text-sm mt-1">Cooler Name is required</p>}
                             </div>
+
 
                             <div className="flex items-center justify-center mt-8">
                                 <button
