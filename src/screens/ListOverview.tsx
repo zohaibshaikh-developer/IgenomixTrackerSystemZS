@@ -173,6 +173,8 @@ const ListOverview: React.FC = () => {
     const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
     const [selectedDeleteoverview, setSelectedDeleteoverview] = useState({ overviewId: 0, overviewName: '' });
 
+    const [selectedClinic, setSelectedClinic] = useState('');
+    const [clinicNames, setClinicNames] = useState<string[]>([]);
 
 
     const toggleSidebar = () => {
@@ -187,7 +189,37 @@ const ListOverview: React.FC = () => {
     const [isUpdateModalOpen, setUpdateModalOpen] = useState(false);
     const [selectedoverview] = useState({ overviewId: 0, overviewName: '' });
 
+    useEffect(() => {
 
+        fetchData();
+    }, []);
+    const fetchData = async () => {
+        try {
+            const response = await axios.get(`${BASE_URL}/list-Overviews`);
+            const data = response.data;
+            if (data.status === 200) {
+                setoverviews(data.data);
+                setFilteredoverviews(data.data);
+                setIsLoading(false);
+            } else {
+                setoverviews([]);
+                setIsLoading(false);
+            }
+
+
+            // Fetch clinic names
+            const clinicNamesResponse = await axios.get(`${BASE_URL}/list-clinics`);
+            const clinicNamesData = clinicNamesResponse.data.data;
+
+            // Filter out empty, null, or undefined clinic names
+            const filteredClinicNames = clinicNamesData.filter((clinic: any) => clinic.clinicName);
+
+            setClinicNames(filteredClinicNames.map((clinic: any) => clinic.clinicName));
+        } catch (error) {
+            console.error('Error fetching data:', error);
+            setIsLoading(false);
+        }
+    };
     const handleUpdate = async (overviewId: any, overviewName: any, newoverviewId: any) => {
 
         try {
@@ -310,9 +342,60 @@ const ListOverview: React.FC = () => {
 
     const [, setFocusElement] = useState<HTMLElement | null>(null);
 
+    const handleClinicChange = async (event: React.ChangeEvent<HTMLSelectElement>) => {
+        const selectedClinic = event.target.value;
+        setSelectedClinic(selectedClinic);
+
+        // Check if "All Clinics" is selected
+        if (selectedClinic === "") {
+            try {
+                const response = await axios.get(`${BASE_URL}/list-Overviews`);
+                const data = response.data;
+                if (data.status === 200) {
+                    setoverviews(data.data);
+                    setFilteredoverviews(data.data);
+                    setIsLoading(false);
+                } else {
+                    setoverviews([]);
+                    setIsLoading(false);
+                }
+            } catch (error) {
+                console.error('Error fetching data:', error);
+                setIsLoading(false);
+            }
+        } else {
+            // Fetch overviews by clinic name
+            try {
+                const response = await axios.get(`${BASE_URL}/list-Overviews-ByClinic/${selectedClinic}`);
+                const data = response.data;
+                if (data.status === 200) {
+                    setoverviews(data.data);
+                    setFilteredoverviews(data.data);
+                    setIsLoading(false);
+                } else {
+                    // Handle the case when no overviews are found for the selected clinic.
+                    setShowNoDataAlert(true);
+
+                    console.log(data.message);
+                }
+            } catch (error) {
+                console.error('Error fetching data:', error);
+                setIsLoading(false);
+            }
+        }
+    };
+
+    const [showNoDataAlert, setShowNoDataAlert] = useState(false);
 
     return (
         <>
+            {showNoDataAlert && (
+                <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-4 border border-gray-300 rounded-md shadow-lg">
+                    <p style={{ color: 'red', fontSize: 20, marginBottom: '2%' }}>No data found for {selectedClinic}</p>
+                    <button onClick={() => setShowNoDataAlert(false)}>Close</button>
+                </div>
+            )}
+
             {(!isSidebarOpen || window.innerWidth >= 768) && !isLoading && (
                 // <div className='flex items-center justify-center fixed top-4 left-8 transform z-50'>
                 <div className={`ml-4 ${isSidebarOpen ? 'ml-28 xl:ml-56 lg:ml-56 md:ml-56' : 'ml-9'} relative text-black text-start text-3xl mt-[-4%] md:mt-[-1%] lg:mt-[-1%] xl:mt-[-1%]`} style={{ fontFamily: 'Lugrasimo, cursive' }}>
@@ -322,7 +405,7 @@ const ListOverview: React.FC = () => {
             )}
             {alert.visible && <Alert message={alert.message} onClose={function (): void {
                 throw new Error('Function not implemented.');
-            } } />}
+            }} />}
 
             {isLoading && (
                 <div className="loader-container">
@@ -383,6 +466,22 @@ const ListOverview: React.FC = () => {
                         </div>
 
                         <div className="flex flex-col items-center justify-center mt-2 overflow-y-auto">
+                            <form className="w-full mb-2 p-1 justify-self-start">
+                                <select
+                                    value={selectedClinic}
+                                    onChange={handleClinicChange}
+                                    className="p-2 rounded border border-gray-300 w-full md:w-1/3 mb-2 md:mb-0 justify-self-start"
+                                >
+                                    <option value="">All Clinics</option>
+                                    {clinicNames.map((clinicName) => (
+                                        <option key={clinicName} value={clinicName}>
+                                            {clinicName}
+                                        </option>
+                                    ))}
+                                </select>
+                            </form>
+
+
                             <form className="w-full mb-3 p-1">
                                 <input
                                     className="form-control mb-4 w-full h-8 bg-cyan-500 p-2 font-semibold text-lg rounded-lg placeholder-white"
