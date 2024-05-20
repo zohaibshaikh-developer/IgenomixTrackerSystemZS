@@ -43,7 +43,7 @@ const AddCooler: React.FC = () => {
         return () => {
             window.removeEventListener('resize', handleResize);
         };
-    }, [isBodyOverflowHidden]);
+    }, [isBodyOverflowHidden])
 
     const handleSubmit = async () => {
         if (!coolerId.trim()) {
@@ -119,7 +119,7 @@ const AddCooler: React.FC = () => {
                                 } text-black text-3xl mt-2`}
                             style={{ fontFamily: 'Merriweather, serif' }}
                         >
-                            Add Cooler
+                            ADD COOLER
                         </div>
                     )}
                 </div>

@@ -198,7 +198,7 @@ const CoolerOUT: React.FC = () => {
                                         } text-black text-3xl mt-2`}
                                     style={{ fontFamily: 'Merriweather, serif' }}
                                 >
-                                    Send Cooler
+                                    SEND COOLER
                                 </div>
                             )}
                         </div>

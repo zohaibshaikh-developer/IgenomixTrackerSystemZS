@@ -179,7 +179,7 @@ const CoolerIN: React.FC = () => {
                                         } text-black text-3xl mt-2`}
                                     style={{ fontFamily: 'Merriweather, serif' }}
                                 >
-                                    Receive Cooler
+                                    RECEIVE COOLER
                                 </div>
                             )}
                         </div>

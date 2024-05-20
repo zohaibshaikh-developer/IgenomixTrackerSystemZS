@@ -322,7 +322,7 @@ const Listclinic: React.FC = () => {
             {(!isSidebarOpen || window.innerWidth >= 768) && !isLoading && (
                 // <div className='flex items-center justify-center fixed top-4 left-8 transform z-50'>
                 <div className={`ml-4 ${isSidebarOpen ? 'ml-28 xl:ml-56 lg:ml-56 md:ml-56' : 'ml-9'} relative text-black text-start text-3xl mt-[-4%] md:mt-[-1%] lg:mt-[-1%] xl:mt-[-1%]`} style={{ fontFamily: 'Merriweather, serif' }}>
-                    List Of Clinics
+                    LIST OF CLINICS
                 </div>
                 // </div>
             )}

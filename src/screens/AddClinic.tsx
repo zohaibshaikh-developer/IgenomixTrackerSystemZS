@@ -103,7 +103,7 @@ const AddClinic: React.FC = () => {
                                 } text-black text-3xl mt-2`}
                             style={{ fontFamily: 'Merriweather, serif' }}
                         >
-                            Add Clinic
+                            ADD CLINIC
                         </div>
                     )}
                 </div>
