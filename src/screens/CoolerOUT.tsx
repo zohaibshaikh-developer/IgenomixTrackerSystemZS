@@ -45,28 +45,48 @@ const CoolerOUT: React.FC = () => {
         ListCoolerData();
     }, []);
 
+    // const ListClinicData = async () => {
+    //     setIsLoading(true);
+
+    //     try {
+    //         // const response = await axios.get(`${BASE_URL}/list-clinics`);
+
+    //         const clinicNamesResponse = await axios.get(`${BASE_URL}/list-clinics`);
+    //         const clinicNamesData = clinicNamesResponse.data.data;
+
+    //         // Filter out empty, null, or undefined clinic names
+    //         const filteredClinicNames = clinicNamesData.filter((clinic: any) => clinic.clinicName);
+    //         setClinicList(filteredClinicNames.map((clinic: any) => clinic.clinicName));
+
+    //         // setClinicList(response.data.data);
+    //         setIsLoading(false);
+
+    //     } catch (error) {
+    //         console.error('Error fetching clinic list:', error);
+    //         setIsLoading(false);
+
+    //     }
+    // };
+
+
     const ListClinicData = async () => {
         setIsLoading(true);
 
         try {
-            // const response = await axios.get(`${BASE_URL}/list-clinics`);
+            const response = await axios.get(`${BASE_URL}/list-clinics`);
 
-            const clinicNamesResponse = await axios.get(`${BASE_URL}/list-clinics`);
-            const clinicNamesData = clinicNamesResponse.data.data;
+            // Filter out entries with missing or empty clinicName
+            const filteredData = response.data.data.filter((clinic: { clinicName: string; }) => clinic.clinicName && clinic.clinicName.trim() !== "");
 
-            // Filter out empty, null, or undefined clinic names
-            const filteredClinicNames = clinicNamesData.filter((clinic: any) => clinic.clinicName);
-            setClinicList(filteredClinicNames.map((clinic: any) => clinic.clinicName));
-
-            // setClinicList(response.data.data);
-            setIsLoading(false);
-
+            setClinicList(filteredData);
         } catch (error) {
             console.error('Error fetching clinic list:', error);
+        } finally {
             setIsLoading(false);
-
         }
     };
+
+
 
     const ListCoolerData = async () => {
         setIsLoading(true);
