@@ -49,8 +49,16 @@ const CoolerOUT: React.FC = () => {
         setIsLoading(true);
 
         try {
-            const response = await axios.get(`${BASE_URL}/list-clinics`);
-            setClinicList(response.data.data);
+            // const response = await axios.get(`${BASE_URL}/list-clinics`);
+
+            const clinicNamesResponse = await axios.get(`${BASE_URL}/list-clinics`);
+            const clinicNamesData = clinicNamesResponse.data.data;
+
+            // Filter out empty, null, or undefined clinic names
+            const filteredClinicNames = clinicNamesData.filter((clinic: any) => clinic.clinicName);
+            setClinicList(filteredClinicNames.map((clinic: any) => clinic.clinicName));
+
+            // setClinicList(response.data.data);
             setIsLoading(false);
 
         } catch (error) {
