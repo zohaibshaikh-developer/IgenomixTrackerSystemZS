@@ -502,7 +502,7 @@ const ListCoolerIN: React.FC = () => {
                                     <table className="min-w-full bg-white border border-gray-300">
                                         <thead>
                                             <tr className="bg-cyan-500 text-white text-lg">
-                                                <th className="py-2 px-2 lg:px-4 w-1/6 border-r">Sr.No</th>
+                                                {/* <th className="py-2 px-2 lg:px-4 w-1/6 border-r">Sr.No</th> */}
                                                 <th className="py-2 px-2 lg:px-4 border-r">Cooler ID</th>
                                                 <th className="py-2 px-2 lg:px-4 border-r">Date Received</th>
                                                 <th className="py-2 px-2 lg:px-4 border-r">Quantity</th>
@@ -512,7 +512,7 @@ const ListCoolerIN: React.FC = () => {
                                         <tbody>
                                             {filteredcoolersIN.map((coolerIN, index) => (
                                                 <tr key={index} className="border-t font-medium">
-                                                    <td className="py-2 px-2 lg:px-4 border-r">{coolerIN.Sr_No}</td>
+                                                    {/* <td className="py-2 px-2 lg:px-4 border-r">{coolerIN.Sr_No}</td> */}
                                                     <td className="py-2 px-2 lg:px-4 border-r">{coolerIN.coolerID}</td>
                                                     <td className="py-2 px-2 lg:px-4 border-r">{coolerIN.DateReceived}</td>
                                                     <td className="py-2 px-2 lg:px-4 border-r">{coolerIN.Quantity}</td>

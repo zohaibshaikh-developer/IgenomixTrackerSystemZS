@@ -405,7 +405,7 @@ const Listclinic: React.FC = () => {
                                     <table className="min-w-full bg-white border border-gray-300">
                                         <thead>
                                             <tr className="bg-cyan-500 text-white text-lg">
-                                                <th className="py-2 px-2 lg:px-4 w-1/6 border-r">Sr.No</th>
+                                                {/* <th className="py-2 px-2 lg:px-4 w-1/6 border-r">Sr.No</th> */}
                                                 <th className="py-2 px-2 lg:px-4 border-r">Clinic Name</th>
                                                 <th className="py-2 px-2 lg:px-4 w-1/6 p-2">Action</th>
                                             </tr>
@@ -413,7 +413,7 @@ const Listclinic: React.FC = () => {
                                         <tbody>
                                             {filteredclinics.map((clinic, index) => (
                                                 <tr key={index} className="border-t font-medium">
-                                                    <td className="py-2 px-2 lg:px-4 border-r">{clinic.Sr_No}</td>
+                                                    {/* <td className="py-2 px-2 lg:px-4 border-r">{clinic.Sr_No}</td> */}
                                                     <td className="py-2 px-2 lg:px-4 border-r">{clinic.clinicName}</td>
                                                     <td className="py-2 px-2 lg:px-4 flex items-center justify-center space-x-3">
                                                         <button

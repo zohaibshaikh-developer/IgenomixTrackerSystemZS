@@ -498,7 +498,7 @@ const ListOverview: React.FC = () => {
                                     <table className="min-w-full bg-white border border-gray-300">
                                         <thead>
                                             <tr className="bg-cyan-500 text-white text-lg">
-                                                <th className="py-2 px-2 lg:px-4 w-[8%] border-r">Sr.No</th>
+                                                {/* <th className="py-2 px-2 lg:px-4 w-[8%] border-r">Sr.No</th> */}
                                                 <th className="py-2 px-2 lg:px-4 w-[14%] border-r">Date Sent</th>
                                                 <th className="py-2 px-2 lg:px-4 w-[8%] border-r">Cooler ID</th>
                                                 <th className="py-2 px-2 lg:px-4 border-r">Clinic Name</th>
@@ -511,7 +511,7 @@ const ListOverview: React.FC = () => {
                                         <tbody>
                                             {filteredoverviews.map((overview, index) => (
                                                 <tr key={index} className="border-t font-medium">
-                                                    <td className="py-2 px-2 lg:px-4 border-r">{overview.Sr_No}</td>
+                                                    {/* <td className="py-2 px-2 lg:px-4 border-r">{overview.Sr_No}</td> */}
                                                     <td className="py-2 px-2 lg:px-4 border-r">{overview.DateSent}</td>
                                                     <td className="py-2 px-2 lg:px-4 border-r">{overview.coolerID}</td>
                                                     <td className="py-2 px-2 lg:px-4 border-r">{overview.clinicName}</td>

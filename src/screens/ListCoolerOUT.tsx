@@ -493,7 +493,7 @@ const ListCoolerOUT: React.FC = () => {
                                     <table className="min-w-full bg-white border border-gray-300">
                                         <thead>
                                             <tr className="bg-cyan-500 text-white text-lg">
-                                                <th className="py-2 px-2 lg:px-4 w-1/6 border-r">Sr.No</th>
+                                                {/* <th className="py-2 px-2 lg:px-4 w-1/6 border-r">Sr.No</th> */}
                                                 <th className="py-2 px-2 lg:px-4 border-r">Date Sent</th>
                                                 <th className="py-2 px-2 lg:px-4 border-r">Clinic Name</th>
                                                 <th className="py-2 px-2 lg:px-4 border-r">Cooler ID</th>
@@ -503,7 +503,7 @@ const ListCoolerOUT: React.FC = () => {
                                         <tbody>
                                             {filteredclinics.map((coolerOUT, index) => (
                                                 <tr key={index} className="border-t font-medium">
-                                                    <td className="py-2 px-2 lg:px-4 border-r">{coolerOUT.Sr_No}</td>
+                                                    {/* <td className="py-2 px-2 lg:px-4 border-r">{coolerOUT.Sr_No}</td> */}
                                                     <td className="py-2 px-2 lg:px-4 border-r">{coolerOUT.DateSent}</td>
                                                     <td className="py-2 px-2 lg:px-4 border-r">{coolerOUT.clinicName}</td>
                                                     <td className="py-2 px-2 lg:px-4 border-r">{coolerOUT.coolerID}</td>
