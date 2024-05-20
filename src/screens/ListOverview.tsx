@@ -383,7 +383,7 @@ const ListOverview: React.FC = () => {
                 setIsLoading(false);
             }
         }
-    };
+    }
 
     const [showNoDataAlert, setShowNoDataAlert] = useState(false);
 

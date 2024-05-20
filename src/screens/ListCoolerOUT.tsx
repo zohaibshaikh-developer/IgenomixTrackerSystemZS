@@ -56,8 +56,16 @@ const UpdateModal: React.FC<{
 
     const ListClinicData = async () => {
         try {
-            const response = await axios.get(`${BASE_URL}/list-clinics`);
-            setClinicList(response.data.data);
+            // const response = await axios.get(`${BASE_URL}/list-clinics`);
+            // setClinicList(response.data.data);
+            const clinicNamesResponse = await axios.get(`${BASE_URL}/list-clinics`);
+            const clinicNamesData = clinicNamesResponse.data.data;
+
+            // Filter out empty, null, or undefined clinic names
+            const filteredClinicNames = clinicNamesData.filter((clinic: any) => clinic.clinicName);
+
+            setClinicList(filteredClinicNames.map((clinic: any) => clinic.clinicName));
+
         } catch (error) {
             console.error('Error fetching clinic list:', error);
         }
