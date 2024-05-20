@@ -86,7 +86,7 @@ const Dashboard: React.FC = () => {
       {/* Sidebar */}
       <Sidebar toggleSidebar={toggleSidebar} isSidebarOpen={isSidebarOpen} />
       {(!isSidebarOpen || window.innerWidth >= 768) && (
-        <div className={`ml-4 ${isSidebarOpen ? 'ml-28 xl:ml-56 lg:ml-56 md:ml-56' : 'ml-8'} text-black text-3xl mt-[-4%] md:mt-[-1%] lg:mt-[-1%] xl:mt-[-1%]`} style={{ fontFamily: 'Lugrasimo, cursive' }}>
+        <div className={`ml-4 ${isSidebarOpen ? 'ml-28 xl:ml-56 lg:ml-56 md:ml-56' : 'ml-8'} text-black text-3xl mt-[-4%] md:mt-[-1%] lg:mt-[-1%] xl:mt-[-1%]`} style={{ fontFamily: 'Merriweather, serif' }}>
           Dashboard
         </div>
       )}

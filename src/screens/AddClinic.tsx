@@ -4,7 +4,7 @@ import Sidebar from '../components/Sidebar';
 import Hamburger from 'hamburger-react';
 import BASE_URL from '../config/base_url';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom'; 
+import { useNavigate } from 'react-router-dom';
 import backgroundImg from '../assets/blur-hospital.jpg';
 
 
@@ -51,17 +51,17 @@ const AddClinic: React.FC = () => {
         } else {
             setclinicNameValid(true);
         }
-    
+
         setSubmitting(true);
         setErrorMessage('');
-    
+
         try {
             const response = await axios.post(`${BASE_URL}/add-clinic`, {
                 clinicName: clinicName,
             });
-        
+
             const responseData = response.data;
-        
+
             if (response.status !== 200) {
                 if (response.status === 401) {
                     throw new Error(responseData.message || 'Failed to Add Clinic, Try Again Later.');
@@ -70,7 +70,7 @@ const AddClinic: React.FC = () => {
                     throw new Error(responseData.message || 'Failed to add clinic');
                 }
             }
-        
+
             navigate('/list-clinics', { state: { message: responseData.message || 'clinic added successfully' } });
         } catch (error: any) {
             console.error('Error adding clinic:', error);
@@ -79,8 +79,8 @@ const AddClinic: React.FC = () => {
             setSubmitting(false);
         }
     };
-    
-    
+
+
 
     return (
         <div className="flex items-start justify-start h-screen">
@@ -101,7 +101,7 @@ const AddClinic: React.FC = () => {
                         <div
                             className={`ml-4 ${isSidebarOpen ? 'ml-28 xl:ml-52 lg:ml-52 md:ml-52' : 'ml-2'
                                 } text-black text-3xl mt-2`}
-                            style={{ fontFamily: 'Lugrasimo, cursive' }}
+                            style={{ fontFamily: 'Merriweather, serif' }}
                         >
                             Add Clinic
                         </div>

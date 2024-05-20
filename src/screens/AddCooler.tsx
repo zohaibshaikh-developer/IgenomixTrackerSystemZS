@@ -117,7 +117,7 @@ const AddCooler: React.FC = () => {
                         <div
                             className={`ml-4 ${isSidebarOpen ? 'ml-28 xl:ml-52 lg:ml-52 md:ml-52' : 'ml-2'
                                 } text-black text-3xl mt-2`}
-                            style={{ fontFamily: 'Lugrasimo, cursive' }}
+                            style={{ fontFamily: 'Merriweather, serif' }}
                         >
                             Add Cooler
                         </div>
